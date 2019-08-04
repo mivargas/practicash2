@@ -164,5 +164,1525 @@
 		 }
 </script>
 
+<script>
+	$(document).ready(function(){
+
+///////aqui esta la variable de session 
+
+
+ 
+  var n_session = sessionStorage.getItem("numero_secion");
+
+//
+
+////////////////////////////////aqui finaliza la parte del pago
+
+	if(n_session==null)
+	{ 
+////////////////////////aqui empieza la parte de generar el codigo de validacion del numero de telefono validar.html
+		$("#enviar_cod").on("click", function(){
+			//alert("ffffff");
+			
+			var numero_tele = $("#tel").val();
+
+	        var codedial = $(".selected-flag").attr('title');
+	        var codigo_i = codedial.split('+');
+	        var codigo = codigo_i[1];
+
+			var validar_numero_t= validar_numero_t(numero_tele);
+
+
+	        if (validar_numero_t==false) 
+	        {
+	            swal("Error","El campo del Numero de Telefono debe ser numerico, y debe contener minimo 5 digitos","error"); 
+	        }       
+
+
+	        if (validar_numero_t==true) 
+	        {
+	        	//numero_tele = "+"+codigo+numero_tele;
+	        	numero_tele = codigo+numero_tele;
+				var dataString10="nombre_funcion="+"a_suscribir"+"&numero="+numero_tele+"&clave="+"23233"+"&fecha_entrada="+"23-23-3"+"&caso="+"generar_codigo_val";
+				
+				//alert(numero_tele);
+
+	        	$.ajax({
+				type: "POST",
+				url:"api/api.php",
+				data: dataString10,
+				crossDomain: true,
+				cache: false,
+				success: function(data){
+
+
+
+
+
+/****************elimina console.log(data) y descomenta lo que esta comentado********************/
+
+					//console.log(data);
+				
+					var datosString10 = $.parseJSON(data);
+					console.log(datosString10);
+		
+						var men = datosString10.mensaje;
+						var id_datos = datosString10.id;
+					
+					if (id_datos == 'success')
+					{
+					$("#enviar_cod").fadeOut(100);
+
+						$("#titulo_cod").text(men);
+						$("#codigo_se").fadeIn(1000);
+						$("#boton_val").fadeIn(1500);
+		            	
+					}
+					if (id_datos == 'error')
+					{
+						 swal("Error","Hubo un error en la base de datos o al validar el telefono","error");
+					}   
+
+				}
+			})
+	        }
+
+	        
+		    
+		    function validar_numero_t(num){
+
+		     var filtro = /^[0-9]{5,25}$/;
+		     var result = filtro.test(num);
+		    
+		     return result;
+		     }
+		});	
+	////////////////////////aqui finaliza la parte de generar el codigo de validacion del numero de telefono
+		
+
+
+	/////////////////////////////aqui empieza la parte de validacion del numero de telefono
+	//es decir validar.html
+
+		var numero_tele_temp = 0;
+		var clave_temp = 0;
+
+
+	      $("#boton_val").on("click", function(){
+	    
+	        var numero_tele = $("#tel").val();
+
+	        var codedial = $(".selected-flag").attr('title');
+	        var codigo_i = codedial.split('+');
+	        var codigo = codigo_i[1];
+	        var codigo_val= $("#cod_val").val();
+	        numero_tele = codigo+numero_tele;
+
+	        //alert(numero_tele+" "+codigo+" "+codigo_val);
+
+	        var validar_numero= validar_numero(numero_tele);
+	      
+		    function validar_numero(num){
+
+		     var filtro = /^[0-9+]{5,15}$/;
+		     var result = filtro.test(num);
+		    
+		     return result;
+		     }        
+
+	//EN CASO DE CAMPOS EN BLANCO
+	        if (validar_numero=="" || codigo_val =="") 
+	        {
+	            swal("Error","Debes llenar todos los campos","error"); 
+	        }       
+
+
+	//EN CASO DE ALGUN CAMPO ESCRITO DE FORMA ERRONEA
+
+	        if(validar_numero==false) 
+	        {
+	            swal("Error","El Numero de telefono debe tener min 5 digitos y el Codigo de Seguridad debe ser de 5 digitos","error"); 
+	        }
+
+
+	            if(validar_numero==true)
+	            {
+	            	//alert("estan biekljljlkn");
+				var dataString11="nombre_funcion="+"a_suscribir"+"&numero="+numero_tele+"&clave="+codigo_val+"&fecha_entrada="+"23-23-3"+"&caso="+"validar_t_c";
+
+	        	$.ajax({
+				type: "POST",
+				url:"api/api.php",
+				data: dataString11,
+				crossDomain: true,
+				cache: false,
+				success: function(data){
+					console.log(data);
+				//	var datos_num_t =$('#tarjeta');
+					var datosString11 = $.parseJSON(data);
+					console.log(datosString11);
+					//$.each(datosString10,function(i,field){
+						//var men=field.mensaje;
+						var men = datosString11.mensaje;
+						var id_datos = datosString11.id;
+						//alert(id_datos);
+					if (id_datos == 'success_u_no')
+					{
+						var numero_tele2 = '+'+numero_tele;
+		            	//$("#numero_tele2").val(numero_tele);
+						$("#numero_tele2").attr('value',numero_tele);
+						$("#numero_tele3").attr('value',numero_tele2);
+						$(".formulario_val").fadeOut(100);
+		            	$(".formulario_re").fadeIn(2000);
+
+					}
+
+					if (id_datos == 'success_u_si')
+					{
+						 //swal("success","El usuario ya existe","success");
+						localStorage.loginstatus = "true";
+							////////
+						sessionStorage.setItem("numero_secion",numero_tele);
+							//////////						
+						window.location.href = "Paginas/usuario.html";
+					}
+					
+					if (id_datos == 'error_c')
+					{
+						 swal("Error","El Codigo de Seguridad No es el Correcto","error");
+					}
+					if (id_datos == 'error_t')
+					{
+						alert("El tiempo para ingresar codigo de seguridad Ha expirado");
+						window.location.href = "index.html";
+					}				
+				}
+			})
+	        
+	        	}
+
+	    });
+	          
+	    
+	   
+	//esta parte es para el marcaje unico de los checkbox
+
+	$("input:checkbox").on('click', function() {
+	  // in the handler, 'this' refers to the box clicked on
+	  var $box = $(this);
+	  if ($box.is(":checked")) {
+	    var group = "input:checkbox[name='" + $box.attr("name") + "']";
+	    $(group).prop("checked", false);
+	    $box.prop("checked", true);
+	  } else {
+	    $box.prop("checked", false);
+	  }
+	});
+
+
+	////////////////////////// aqui termina la parte de la validacion de telefonp
+
+
+	/////////////////////// aqui empieza la parte del registro del usuario registro_usuario.html
+
+			$("#registrarUsuario").submit(registrar_usuario)
+
+			function registrar_usuario(event){
+				event.preventDefault();
+				//	alert("sssss");		
+				var numero_tele = $("#tel").val();
+
+		        var codedial = $(".selected-flag").attr('title');
+		        var codigo_i = codedial.split('+');
+		        var codigo = codigo_i[1];
+		        var codigo_val= $("#cod_val").val();
+		        numero_tele = codigo+numero_tele;
+
+	        //alert(numero_tele+" "+codigo+" "+codigo_val);
+
+				var datos = new FormData($("#registrarUsuario")[0]);
+
+				var numero_pin  = datos.get("numero_pin");
+				//var correo  = datos.get("correo");
+				//var f_nacimiento  = datos.get("f_nacimiento");
+				//var sexo  = datos.get("sexo");			
+
+		        var validar_numero_pin = validar_numero(numero_pin);
+		        //var validar_correo = validar_correo(correo);
+		        //var validar_fecha = validar_fecha(f_nacimiento);
+
+			  //alert(validar_numero_pin+" "+validar_correo+" "+validar_fecha+" "+sexo)
+			    function validar_numero(num){
+
+			     var filtro = /^[0-9a-zA-Z]{5}$/;
+			     var result = filtro.test(num);		    
+			     return result;
+			     } 
+
+	     	    function validar_correo(correo_em){
+
+			     var filtro = /^[^@]+@[^@]+\.[a-zA-Z]{2,}$/;
+			     var result = filtro.test(correo_em);
+			    
+			     return result;
+			     }
+			      
+
+	     	    function validar_fecha(fe){
+			     var filtro = /^[0-9]{2}[\-]{1}[0-9]{2}[\-]{1}[0-9]{4}$/;
+
+			     var arreglo_fecha = fe.split('-');
+	        	 var dia = arreglo_fecha[0];
+	        	 var mes = arreglo_fecha[1];
+
+	        	 if(dia>31 || mes>12) 
+	        	 {
+	        	 	var result = false;
+	        	 }else{
+	        	 	var result = filtro.test(fe);
+	        	 }
+			    
+			     return result;
+			     }
+
+
+			     //if(validar_numero_pin == false || validar_correo == false || validar_fecha == false || sexo==null) 
+			     //{
+			     	//swal("Error", "El codigo PIN debe ser solo de cinco caracteres y solo puedes usar numeros o letras;  \nEl correo debe tener el formato xxxxx@xxxx.xxx; \nLa Fecha de Nacimiento de ser en formato dd-mm-aaaa; \nDebes rellenar los campos Pin, Correo, Fecha de Nacimiento y Sexo","error");
+			     //}
+				
+				if(validar_numero_pin == false)
+				{
+					swal("Error", "El codigo PIN debe ser solo de cinco caracteres y solo puedes usar numeros o letras","error");
+				} 
+
+			    //if(validar_numero_pin == true && validar_correo == true && validar_fecha == true &&  sexo!=null) 
+				if(validar_numero_pin == true) 
+				{			
+					$.ajax({
+						url:'api/api.php',
+						type: 'POST',
+						data: datos,
+						contentType: false, //para no permitir envio de datos get
+						processData: false,//para no convertir los datos en forma de texto
+						cache: false,
+						success: function(data){
+							//console.log(data);
+							var datosString12 = $.parseJSON(data);
+							console.log(datosString12);
+							if(datosString12.id == 'success')
+							{
+								alert("Usuario Registrado Correctamente");
+
+								localStorage.loginstatus = "true";
+							////////
+								sessionStorage.setItem("numero_secion",numero_tele);
+							//////////						
+								window.location.href = "Paginas/usuario.html";
+								
+							}
+							if(datosString12.id == 'error')
+							{
+								alert("Hubo un problema al registrar el usuario");
+								window.location.href = "index.html";
+							}
+
+							/*if(datosString12.id == 'e_imagen')
+							{
+								swal("Error", datosString12.mensaje,"error"); 
+							}	*/	
+						}
+					}); 
+				}
+			}
+	//////////////////////////// aqui termina la parte de registro de usuario
+
+	}
+
+
+////////aqui se inserta el numero en el campo oculto para que lo genere
+//el generador de codigo qr
+	if(n_session!=null)
+	{ 
+
+
+	var numVal = localStorage.getItem("numResult");
+	var dataString="numVal="+numVal+"&selectDatos=";
+
+	//n_session=123213;
+
+//ESTA PARTE ENVIA LOS DATOS A AJUSTES.HTML PARA ACTULIZAR DATOS DEL USUARIO
+	var dataString15="nombre_funcion="+"a_suscribir"+"&numero="+n_session+"&clave="+"23233"+"&fecha_entrada="+"23-23-3"+"&caso="+"obtener_usuario";
+
+	var f_n_u ="";
+	var id_u ="";
+	var n_u ="";
+	var p_u ="";
+	var sex_u ="";
+	var tlf_u =""; 
+	var c_u =""; 
+	var datosString2="";
+
+
+
+		$.ajax({
+			type: "POST",
+			url:"../api/api.php",//------------------------
+			data: dataString15,
+			crossDomain: true,
+			cache: false,
+			success: function(data){
+
+				datosString2 = $.parseJSON(data);
+				console.log(datosString2);
+					var f_n_u = datosString2.fecha_nacimiento;
+					var id_u = datosString2.id;
+					var nombre_u = datosString2.nombre;
+					var p_u = datosString2.pin;
+					var sex_u = datosString2.sexo;
+					var tlf_u = datosString2.telefono; 
+					var c_u = datosString2.correo; 
+
+					var sexo_o = datosString2.sexo; 
+
+//alert(nombre_u+" "+datosString2.nombre);
+//para la parte de transacciones
+				//$("#numero_pin_oculto").val(p_u);
+				$('#numero_pin_oculto').attr('value',p_u);
+//para la parte de movimientos
+				$("#numero_tele2").val(n_session);
+			    $("#numero_tele3").val("+"+n_session);
+			    $("#nombre").val(datosString2.nombre);
+			    $("#numero_pin").val(p_u);
+			    
+
+
+					if (c_u=='escribe tu correo') 
+					{
+						$('#correo').attr('placeholder',c_u);						 
+					}
+
+					if (c_u!='escribe tu correo') 
+					{
+						$('#correo').attr('value',c_u);						 
+					}
+
+					if (f_n_u=='escribe tu fecha de nacimiento') 
+					{
+			   		    $('#f_nacimiento').attr('placeholder',f_n_u);
+					}
+				
+					if (f_n_u!='escribe tu fecha de nacimiento') 
+					{
+			   		    $('#f_nacimiento').attr('value',f_n_u);
+					}
+
+
+				if (sexo_o!='sexo') 
+				{
+					if (sexo_o=='femenino') 
+					{
+						$("#sex_mas").prop('checked', false);
+						$("#sex_fem").prop('checked', true);
+						 
+					}
+					if (sexo_o=='masculino') 
+					{
+						$("#sex_fem").prop('checked', false);
+						$("#sex_mas").prop('checked', true);
+					}
+				}
+
+
+
+
+
+
+			}
+		})	
+
+
+
+$("#actualizarUsuario").submit(actualizar_usuario)
+
+			function actualizar_usuario(event){
+				event.preventDefault();
+					//alert("sssss");		
+				var datos = new FormData($("#actualizarUsuario")[0]);
+
+				var numero_pin  = datos.get("numero_pin");
+				var nombre  = datos.get("nombre");
+				var correo  = datos.get("correo");
+				var f_nacimiento  = datos.get("f_nacimiento");
+				var sexo  = datos.get("sexo");			
+
+		        var validar_numero_pin = validar_numero(numero_pin);
+		        var validar_nombre = validar_nombre(nombre);
+		        var validar_correo = validar_correo(correo);
+		        var validar_fecha = validar_fecha(f_nacimiento);
+
+			  //alert(validar_numero_pin+" "+validar_correo+" "+validar_fecha+" "+sexo)
+
+			    function validar_nombre(nom){
+
+			     var filtro = /^[a-zA-ZáéíóúÁÉÍÓÚ\s]{2,15}$/;
+			     var result = filtro.test(nom);		    
+			     return result;
+			     }
+
+
+			    function validar_numero(num){
+
+			     var filtro = /^[0-9a-zA-Z]{5}$/;
+			     var result = filtro.test(num);		    
+			     return result;
+			     } 
+
+	     	    function validar_correo(correo_em){
+
+			     var filtro = /^[^@]+@[^@]+\.[a-zA-Z]{2,}$/;
+			     var result = filtro.test(correo_em);
+			    
+			     return result;
+			     }
+			      
+
+	     	    function validar_fecha(fe){
+			     var filtro = /^[0-9]{2}[\-]{1}[0-9]{2}[\-]{1}[0-9]{4}$/;
+
+			     var arreglo_fecha = fe.split('-');
+	        	 var dia = arreglo_fecha[0];
+	        	 var mes = arreglo_fecha[1];
+
+	        	 if(dia>31 || mes>12) 
+	        	 {
+	        	 	var result = false;
+	        	 }else{
+	        	 	var result = filtro.test(fe);
+	        	 }
+			    
+			     return result;
+			     }
+
+                 var errores=[];
+                  
+                 if (!validar_nombre) {
+ 
+                    errores.push('El Nombre y Apellido solo pueden ser escritos en letras.');
+                 }
+                 if (!validar_numero_pin) {
+                    errores.push('El codigo PIN debe ser solo de cinco caracteres y solo puedes usar numeros o letras.');
+                 }
+                 if (!validar_correo) {
+                    errores.push('El correo debe tener el formato xxxxx@xxxx.xxx.');
+                 }
+                 if (!validar_fecha) {
+                    errores.push('La Fecha de Nacimiento de ser en formato dd-mm-aaaa.');
+                 }
+                 if (!sexo) {
+                    errores.push('Debes espcificar el sexo.');
+                 }
+ 
+                 if(validar_nombre == false || validar_numero_pin == false || validar_correo == false || validar_fecha == false || sexo==null)
+                 {
+                 	
+                    swal("Error", `${errores}`);
+                 }
+				 
+
+			    if(validar_numero_pin == true && validar_correo == true && validar_fecha == true &&  validar_nombre==true)  
+				{			
+					$.ajax({
+						url:'../api/api.php',
+						type: 'POST',
+						data: datos,
+						contentType: false, //para no permitir envio de datos get
+						processData: false,//para no convertir los datos en forma de texto
+						cache: false,
+						success: function(data){
+							//console.log(data);
+							var datosString12 = $.parseJSON(data);
+							console.log(datosString12);
+							if(datosString12.id == 'success')
+							{
+								alert("Usuario Actualizado Correctamente");
+						
+								window.location.href = "../Paginas/usuario.html";
+								
+							}
+							if(datosString12.id == 'error')
+							{
+								alert("Hubo un problema al actualizar el usuario");
+								window.location.href = "../Paginas/usuario.html";
+							}
+
+							/*if(datosString12.id == 'e_imagen')
+							{
+								swal("Error", datosString12.mensaje,"error"); 
+							}	*/	
+						}
+					}); 
+				}
+			}
+
+
+
+
+
+
+
+
+
+
+	var dataString2="nombre_funcion="+"a_perfil"+"&telefono_cliente_perfil="+n_session+"&key_perfil="+"232";
+
+//aqui van los submenus de la opcion Cartera, estos datos todavia son los delink paulina
+	$.when($.ajax({
+		type: "POST",
+		url:"https://paulina96madrid.000webhostapp.com/datosPrueba/datosEjemplo.php",
+		data: dataString,
+		crossDomain: true,
+		cache: false,
+		beforeSend: function(){ $("#insert").val('Connecting...');},
+		success: function(data){
+			var datos = $('#datosEjemplo');
+			var datosString = $.parseJSON(data);
+			//console.log(datosString);
+			$.each(datosString,function(i,field){
+				var name = field.name;
+				var datosEjemplo = '<li>' + '<a>' + name + '<i class="icono derecha fas fa-angle-right"></i>'+'</a>' + '</li>';
+				datos.append(datosEjemplo);
+			});
+			datos.append('<li><a id="botonEjemplo">Añadir tarjeta<i class="icono derecha fas fa-angle-right"></i></a></li>');
+			$("#botonEjemplo").click(function(){
+				window.location.href = "tarjetas.html";
+			});
+		}	
+	}),
+
+//desde aqui se usan los datos del usuario y de la base de datos	
+//aqui se le pone el nombre que va de bajo de la foto circular
+	$.ajax({
+			type: "POST",
+			url:"../api/api.php",//------------------------
+			data: dataString2,
+			crossDomain: true,
+			cache: false,
+			success: function(data){
+
+				var datosString2 = $.parseJSON(data);
+				console.log(datosString2);
+				$.each(datosString2,function(i,field){
+
+					var id=field.id;
+					var name=field.nombre_cliente;
+					var ruta_i = field.imagen;
+					//var fullname=field.fullname;
+					if(ruta_i!="no_imagen")
+					{
+						$('#img2').attr('src',ruta_i);
+						$('#img_usuario').attr('src',ruta_i);
+						$('#img_usuario2').attr('src',ruta_i);
+						
+					}
+					if(ruta_i=="no_imagen")
+					{
+						$('#img2').attr('src','../img/imagen_usuario/no_foto.png');
+						$('#img_usuario').attr('src','../img/imagen_usuario/no_foto.png');
+						$('#img_usuario2').attr('src','../img/imagen_usuario/no_foto.png');
+
+					}
+					$('#btnEjemplo').text(name);
+
+					$("#nombre_t_cli").text(name);
+				});
+			}
+		})	
+
+	);
+
+/////////////////////////ESTA ES LA PARTE DE SUBIR FOTO DE ajustes.html
+var _URL = window.URL || window.webkitURL;
+$("#imagen").change(function(e) {   
+	    var image, imagen;
+
+      if ((imagen = this.files[0])) {
+
+       var sizeByte = this.files[0].size;
+       var sizekiloBytes = parseInt(sizeByte / 1024);
+    
+        image = new Image();
+        
+        image.onload = function() {           
+            
+
+        if(sizekiloBytes > $('#imagen').attr('size')){
+              swal("Error", "¡El tamaño supera el limite permitido!");
+           $('#imagen').val('');
+        }
+
+        };
+    
+        image.src = _URL.createObjectURL(imagen);
+
+    }
+
+});
+	$('[data-toggle="tooltip"]').tooltip();
+
+    $('#img_usuario2').on('click', function(){
+		$("#modal_foto").modal();
+
+		$("#numero_a").val(n_session);
+		$("#nombre_funcion").val("a_suscribir");
+		$("#clave_a").val("123");
+		$("#fecha_a").val("2019-02-04");
+
+	});	
+	
+	$('#cruz_imagen').on('click', function(){
+		$("#modal_foto").modal();
+
+		$("#numero_a").val(n_session);
+		$("#nombre_funcion").val("a_suscribir");
+		$("#clave_a").val("123");
+		$("#fecha_a").val("2019-02-04");
+
+	});
+		
+		$("#insertar_foto").submit(insertarFoto)
+
+		function insertarFoto(event){
+			event.preventDefault();
+				//alert("sssss");		
+			var datos = new FormData($("#insertar_foto")[0]);
+
+/*			var caso  = datos.get("caso");
+			var fecha_entrada = datos.get("fecha_entrada");
+			var clave = datos.get("clave");
+			var nombre_funcion = datos.get("nombre_funcion");
+			var numero = datos.get("numero");
+
+			alert(caso+" "+fecha_entrada+" "+clave+" "+nombre_funcion+" "+numero);
+*/			/*
+		    var fileSize = $('#imagen')[0].files[0].size;
+		    var sizekiloBytes = parseInt(fileSize / 1024);
+		    if (sizekiloBytes >  $('#imagen').attr('size')) {
+		      alert('El tamaño supera el limite permitido!');
+		      return false;
+		    }else{ */
+
+				$.ajax({
+					url:'../api/api.php',///////////////////
+					type: 'POST',
+					data: datos,
+					contentType: false, //para no permitir envio de datos get
+					processData: false,//para no convertir los datos en forma de texto
+					cache: false,
+					success: function(data){
+	
+						var datosString8 = $.parseJSON(data);
+						//var datosString8 = data;
+						console.log(datosString8);
+						$("#insertar_foto").hide(100);
+						$("#imagen").val("");
+						$("#mensaje").text(datosString8.men);
+	
+						if(datosString8.id == 'success')
+						{
+							//alert(datosString8.men)
+							$('#img_usuario2').attr('src',datosString8.ima);
+							$('#img_usuario').attr('src',datosString8.ima);	
+						}
+					}
+				});
+		//	} 
+		}
+
+		$("#c_m_a").click(function(evento){
+			$("#insertar_foto").show(300);
+			$("#mensaje").text("");
+		});
+		
+
+
+
+
+//aqui se pone el saldo actual
+	var dataString3="nombre_funcion="+"ver_saldo"+"&telefono="+n_session+"&key="+"232";
+
+	$.ajax({
+			type: "POST",
+			url:"../api/api.php",
+			data: dataString3,
+			crossDomain: true,
+			cache: false,
+
+			success: function(data){
+
+				var datosString3 = $.parseJSON(data);
+				console.log(datosString3);
+				$.each(datosString3,function(i,field){
+
+			var total_valor=field.total_valor;
+			
+			$('#saldo_actual').text("$"+total_valor);
+
+		
+			});
+			}
+		})	
+	
+
+
+//aqui se muestra la tabla de los ultimos movimientos del movimientos.html
+
+
+	var dataString5="nombre_funcion="+"a_transaccion"+"&telefono_transaccion="+n_session+"&key_transaccion="+"232";
+
+	$.ajax({
+			type: "POST",
+			url:"../api/api.php",
+			data: dataString5,
+			crossDomain: true,
+			cache: false,
+
+			success: function(data){
+
+				var datos_tabla_general_m =$('#tabla_general_movimientos');
+				var datosString5 = $.parseJSON(data);
+				console.log(datosString5);
+
+				var contador3=0;
+				var maximo =10;
+				$.each(datosString5,function(i,field){
+				if(contador3!=maximo)
+				{
+					var fecha=field.fecha;
+					var movimiento=field.descripcion;
+					var valor = field.valor;
+					var saldo=field.saldo;
+					var concepto = field.observacion;
+					var usuario = field.nombre_cliente;
+					var cliente_transaccion = field.info_contraparte;
+
+					var dia_ini = fecha.substring(8,10);
+	    			var mes_ini = fecha.substring(5,7);
+	    			var anio_ini = fecha.substring(0,4);
+	    			var fecha2 =dia_ini+'-'+mes_ini+'-'+anio_ini;
+				
+					
+				if(valor <0)
+				{ 
+					datos_tabla_general_m.append('<tr><td>'+fecha2+'</td><td>'+concepto+'</td><td>'+movimiento+'</td><td>'+'+' +cliente_transaccion+'</td><td style="color:red;">'+valor+'</td><td>'+'$'+saldo+'</td></tr>');
+				}
+				if(valor>=0)
+				{
+					datos_tabla_general_m.append('<tr><td>'+fecha2+'</td><td>'+concepto+'</td><td>'+movimiento+'</td><td>'+'+'+n_session+' ('+usuario+')'+'</td><td style="color:#00FF00;">'+valor+'</td><td>'+'$'+saldo+'</td></tr>');
+				}
+
+
+	//////////////////
+				var table = "#mitabla";
+				$('.pagination').html('');
+				var trnum = 0;
+				//aqui obtiene el valor de la lista de numeros de registros
+				var maxRows = 10;
+	//aqui calcula la cantidad de registros que hay en la tabla			
+				var totalRows = $(table+' tbody tr').length;
+				//alert(totalRows);
+				$(table+' tr:gt(0)').each(function(){
+					trnum++;
+					if(trnum > maxRows)
+					{
+						$(this).hide();
+					}
+					if (trnum <= maxRows)
+					{
+						$(this).show();
+					}
+				});
+
+				if (totalRows > maxRows)
+				{
+					var pagenum = Math.ceil(totalRows/maxRows);
+					for(var i = 1; i <=pagenum;)
+					{
+						$('.pagination').append('<li data-page="'+i+'" >\<span>'+ i++ +'<span class="sr-only">(current)</span></span>\</li>').show();
+					}
+				}
+	//aqui se pone en activo la primera casilla de la paginacion			
+				$('.pagination li:first-child').addClass('active');
+					
+					$('.pagination li').on('click', function(){
+						var pageNum = $(this).attr('data-page');
+						var trIndex = 0;
+						$('.pagination li').removeClass('active');
+						$(this).addClass('active');
+					
+							$(table+' tr:gt(0)').each(function(){
+								trIndex++;
+								if(trIndex > (maxRows*pageNum) || trIndex <= ((maxRows*pageNum)-maxRows))
+								{
+									$(this).hide();
+								}else{
+									$(this).show();
+								}
+							});
+					
+				});
+/////////////////////
+				contador3= contador3+1;
+			}
+			});
+		$("#total_filas").text(contador3);
+
+  
+			}
+		})	
+
+
+
+//--------------------------------------------------------------
+//////////////////aqui es donde va la parte del pago
+
+
+      $("#btnTransferir").on("click", function(e){
+      	//alert("si");;
+      //e.preventDefault();
+
+/*
+            var telefono_recibe = $("#numero").val();
+            var telefono_recibe2 = "";
+
+            var comp =0;
+			comp = telefono_recibe.indexOf('+');
+
+			var re = /\+/g;
+			//var resultado = cadena.replace(re, '');
+
+			if (comp == -1) 
+			{
+				alert("no estaaaaaa"+comp+" "+telefono_recibe);
+			}
+
+
+			if (comp > -1) 
+			{
+				//telefono_recibe2 = telefono_recibe.text().replace('+', '');
+				 telefono_recibe2 = telefono_recibe.replace(re, '');
+				alert("si esta "+telefono_recibe2+" "+telefono_recibe);
+			}
+*/
+
+
+
+          jQuery.validator.addMethod("patron", function (value, element) {
+        if (/^[+0-9]{3,15}$/.test(value)) {
+            return true;
+        } else {
+            return false;
+        };
+    }, "Escribe tu numero telefonico, puedes incluir el +");
+
+        var formulario = $("#formulario").validate
+         ({
+             rules:
+             {
+               numero: {required: true,patron: true, minlength: 5, maxlength: 20},
+               monto: {required: true, digits: true},
+             },
+             messages:
+             {
+                numero : {required: 'Este campo es obligatorio', digits:'Ingrese solo numeros', minlength: 'El mínimo permitido son 10 caracteres', maxlength: 'El máximo permitido son 10 caracteres' },
+                monto : {required: 'Este campo es obligatorio', digits:'Ingrese solo numeros'},            
+             },
+   
+
+            submitHandler: function(form){            
+        
+            var pin_pago = $("#pin_pago").val();
+            var pin_oculto = $("#numero_pin_oculto").val();
+			var monto_con_decimal = String($("#monto").val()) +"."+ String($("#monto_decimal").val());
+            var valor_de_pago = parseFloat(monto_con_decimal);
+            var telefono_recibe = $("#numero").val();
+            var concepto = $("#concepto").val();
+
+
+
+            var telefono_recibe2 = "";
+
+            var comp =0;
+			comp = telefono_recibe.indexOf('+');
+
+			var re = /\+/g;
+
+
+
+		//	if (comp == -1) 
+		//	{
+		//		alert("no esta");
+			//}
+
+
+			if (comp > -1) 
+			{
+				telefono_recibe2 = telefono_recibe.replace(re, '');
+				telefono_recibe = telefono_recibe2;
+				//alert("si esta "+telefono_recibe2+" "+telefono_recibe);
+			}
+
+
+            var ind1 =0;
+            var ind2=0;
+            if(pin_pago == pin_oculto) 
+            {
+            	ind2 =1;
+            }
+
+            if(pin_pago != pin_oculto) 
+            {
+            	ind2 =0;
+            	e.preventDefault();
+            	swal("Error","El PIN que ingresaste no es correcto","error");
+				
+            }            
+	//alert(pin_pago+" "+pin_oculto);
+//alert(n_session+" "+telefono_recibe);
+            var dataString6="nombre_funcion="+"a_pago"+"&telefono_paga="+n_session+"&pin_pago="+pin_pago+"&valor_de_pago="+valor_de_pago+"&telefono_recibe="+telefono_recibe+"&concepto="+concepto;
+
+            if($.trim(valor_de_pago).length>0 && ind2==1)
+           //if(ind2=1)
+            {
+            $.ajax({
+                type: "POST",
+                url:"../api/api.php",
+                data: dataString6,
+                crossDomain: true,
+                cache: false,
+
+                success: function(data){
+
+                 // var datos_tabla_general_m =$('#tabla_general_movimientos');
+                  var datosString6 = $.parseJSON(data);
+                  console.log(datosString6);
+                  
+                  var men_cabecera_modal =$('#men_cabecera_modal');
+                  var men_cuerpo_modal =$('#men_cuerpo_modal');
+
+                  $.each(datosString6,function(key, value){
+                 // alert("sasd");
+                  	if(value.id=="no_usuario")
+	                {
+	                  	men_cabecera_modal.text(value.cabecera);
+	  					men_cuerpo_modal.append(value.cuerpo+"  <button class='btn btn-primary'>Aqui</button>");
+	  					$("#modal_trans").modal();
+	  					$("#numero").val("");
+	  					$("#monto").val("");
+                  	}
+
+                  	if(value.id=="success")
+	                {
+	                  	men_cabecera_modal.text(value.cabecera);
+	  					men_cuerpo_modal.append(value.cuerpo);
+	  					$("#modal_trans").modal();
+	  					$("#numero").val("");
+	  					$("#monto").val("");
+                  	}
+
+                  	if(value.id=="error_pago")
+	                {
+	                  	men_cabecera_modal.text(value.cabecera);
+	  					men_cuerpo_modal.append(value.cuerpo);
+	  					$("#modal_trans").modal();
+	  					$("#numero").val("");
+	  					$("#monto").val("");
+                  	}
+
+                   	if(value.id=="no_saldo")
+	                {
+	                  	men_cabecera_modal.text(value.cabecera);
+	  					men_cuerpo_modal.append(value.cuerpo);
+	  					$("#modal_trans").modal();
+	  					$("#numero").val("");
+	  					$("#monto").val("");
+                  	}                 	
+
+                  	if(value.id=="telefono_igual")
+	                {
+	                  	men_cabecera_modal.text(value.cabecera);
+	  					men_cuerpo_modal.append(value.cuerpo);
+	  					$("#modal_trans").modal();
+	  					$("#numero").val("");
+	  					$("#monto").val("");
+                  	}                  	
+				  
+				  });
+                
+                }
+            
+              })  
+          //}
+		}
+          return false;
+          }
+
+    });
+          
+    
+     
+    });
+
+
+
+
+
+	////////////////////en esta parte se redirecciona a usuario.html al pulsar boton cerrar
+		 $("#cer_modal").on("click",function(){
+			window.location.href = "usuario.html";
+		 
+		 });
+
+	//esta es la parte de cerrar seccion
+	    $("#cerrar_se").on("click",function(){
+
+	//alert("sadsd");
+			sessionStorage.removeItem("numero_secion");
+			sessionStorage.clear();
+
+			window.location.href = "../index.html";
+	    	});
+
+
+	    $("#botonMapa").on("click",function(){
+		window.open('https://paulina96madrid.000webhostapp.com/ejemploDatos/usuario.php', '_self','location=no');
+
+		/*	
+		//Cargar librerias de Cordova.
+					document.addEventListener("deviceready", onDeviceReady, false);
+					//Funcion ready. 
+					function onDeviceReady() {
+					}
+					//Funcion alerta.
+					function alertDismissed() {
+					window.open('https://paulina96madrid.000webhostapp.com/usuario.php', '_self','location=no');
+					}	
+					//Alerta en cordova.
+					navigator.notification.alert(
+						'No tienes cuenta.',  // message
+						alertDismissed,         // callback
+						'PractiCash',            // title
+						'Registrar'                 // buttonName
+					);*/
+		
+		});
+
+	/////esta es la parte de listar la tarjeta asociada al cliente en recargar tarjeta
+		var dataString7="nombre_funcion="+"a_tarjeta"+"&telefono_cliente_tarjeta="+n_session+"&key_tarjeta="+"232";
+
+		$.ajax({
+				type: "POST",
+				url:"../api/api.php",
+				data: dataString7,
+				crossDomain: true,
+				cache: false,
+				success: function(data){
+					var datos_num_t =$('#tarjeta');
+					var datosString7 = $.parseJSON(data);
+					console.log(datosString7);
+					$.each(datosString7,function(i,field){
+
+					var num_tarjeta=field.stripe_code;
+					datos_num_t.val(num_tarjeta);
+			
+				});
+				}
+			})	
+
+
+
+
+	        var radio_indicador ="radio_ran";
+
+	//en esta parte se habilatan los campos para buscar por fecha
+		$('input[type=radio][name=act_calen]').change(function() {
+
+		    radio_indicador = $(this).attr('id');
+			//alert(ind);
+
+	        if (radio_indicador == "radio_fecha") 
+	        {
+	        	$("#datepicker1").prop('disabled', false );
+	        	$("#datepicker2").prop('disabled', false );
+	        	$("#cant_filas").attr('disabled', 'disabled');
+	        //$("#buscar_tra").css({'color':'#2C3E50','background':'#B2BABB'});  
+	           // $('#div1').show();
+	        }
+	        if (radio_indicador == "radio_ran") 
+	        {
+	        	$("#datepicker1").attr('disabled', 'disabled');
+	        	$("#datepicker2").attr('disabled', 'disabled');
+				$( "#cant_filas").prop('disabled', false ); 
+	        }
+
+
+
+	    })
+
+
+	//AQUI ES DONDE SE BUSCAN LAS FECHAS PARA LA TABLA MOVIMIENTOS
+	    $("#buscar_tra").click(function(evento){
+
+	    	if(radio_indicador=="radio_fecha")
+	    	{
+
+			    var fecha_inicial1=$("#datepicker1").val();
+			    var fecha_final1=$("#datepicker2").val();
+				//alert(fecha_final1+" "+fecha_inicial1)
+
+			    //aqui se valida si la fechas estan en formato DD-MM-YYYY
+			    var val_fecha_i = validar_fecha(fecha_inicial1);
+			    var val_fecha_f = validar_fecha(fecha_final1);
+				//alert(val_fecha_i+" "+val_fecha_f);
+
+			    function validar_fecha(fecha)
+			    {
+				    var filtro = /^([0-2][0-9](-)|3[0-1](-))(0[1-9](-)|1[0-2](-))(20[1-9][0-9])$/;
+				    var result = filtro.test(fecha);   
+				    return result;
+			    }
+				//aqui se formatea la fecha inicial para que java scrip la reconozca/
+				var dia_ini = fecha_inicial1.substring(0,2);
+				var mes_ini = fecha_inicial1.substring(3,5);
+				var anio_ini = fecha_inicial1.substring(6,10);
+
+				//alert(dia_ini+" "+mes_ini+" "+anio_ini);
+				var fecha_inicial2 = anio_ini+"-"+mes_ini+"-"+dia_ini;
+
+				//aqui se formatea la fecha final para que java scrip la reconozca
+				var dia_fin = fecha_final1.substring(0,2);
+				var mes_fin = fecha_final1.substring(3,5);
+				var anio_fin = fecha_final1.substring(6,10);
+
+				//alert(dia_ini+" "+mes_ini+" "+anio_ini);
+				var fecha_final2 = anio_fin+"-"+mes_fin+"-"+dia_fin;
+
+			    fecha_inicial = new Date(fecha_inicial2);
+			    fecha_final = new Date(fecha_final2)
+
+				//val_fecha_i==false;;
+				 //val_fecha_f==false;
+				if(val_fecha_i==false || val_fecha_f==false)
+				{
+				    swal("Error","El formato de fecha permitido es: DD-MM-YYYY","error");
+				}
+
+				if(fecha_inicial=="" || fecha_final=="")
+				{
+				    swal("Error","Debes elegir una fecha inicial y una fecha final","error");
+				}
+
+				if(fecha_inicial>fecha_final)
+				{
+				   swal("Error","No puedes seleccionar una fecha inicial que sea mayor a la fecha final","error");
+				}
+
+
+				var dataString9="nombre_funcion="+"a_transaccion"+"&telefono_transaccion="+n_session+"&key_transaccion="+"232"+"&fecha_inicial="+fecha_inicial2+"&fecha_final="+fecha_final2;
+
+				$.ajax({
+						type: "POST",
+						url:"../api/api.php",
+						data: dataString9,
+						crossDomain: true,
+						cache: false,
+
+						success: function(data){
+							var datos_tabla_general_m =$('#tabla_general_movimientos');
+							var datosString9 = $.parseJSON(data);
+							console.log(datosString9);
+
+							datos_tabla_general_m.text("");
+							var contador2=0;
+
+							$.each(datosString9,function(i,field){
+
+								var fecha=field.fecha;
+								var movimiento=field.descripcion;
+								var valor = field.valor;
+								var saldo=field.saldo;
+								var  usuario = field.nombre_cliente;
+								var concepto = field.observacion;
+
+								var dia_ini = fecha.substring(8,10);
+				    			var mes_ini = fecha.substring(5,7);
+				    			var anio_ini = fecha.substring(0,4);
+				    			var fecha2 =dia_ini+'-'+mes_ini+'-'+anio_ini;
+								
+								
+								if(valor <0)
+								{ 
+									datos_tabla_general_m.append('<tr><td>'+fecha2+'</td><td>'+concepto+'</td><td>'+movimiento+'</td><td>'+'+'+n_session+' ('+usuario+')'+'</td><td style="color:red;">'+valor+'</td><td>'+'$'+saldo+'</td></tr>');
+								}
+								if(valor>=0)
+								{
+									datos_tabla_general_m.append('<tr><td>'+fecha2+'</td><td>'+concepto+'</td><td>'+movimiento+'</td><td>'+'+'+n_session+' ('+usuario+')'+'</td><td style="color:#00FF00;">'+valor+'</td><td>'+'$'+saldo+'</td></tr>');
+								}
+
+								contador2 = contador2+1;
+							});
+						$("#total_filas").text(contador2);
+			
+		//////////////////
+					var table = "#mitabla";
+					$('.pagination').html('');
+					var trnum = 0;
+					//aqui obtiene el valor de la lista de numeros de registros
+					var maxRows = 10;
+		//aqui calcula la cantidad de registros que hay en la tabla			
+					var totalRows = $(table+' tbody tr').length;
+					//alert(totalRows);
+					$(table+' tr:gt(0)').each(function(){
+						trnum++;
+						if(trnum > maxRows)
+						{
+							$(this).hide();
+						}
+						if (trnum <= maxRows)
+						{
+							$(this).show();
+						}
+					});
+
+					if (totalRows > maxRows)
+					{
+						var pagenum = Math.ceil(totalRows/maxRows);
+						for(var i = 1; i <=pagenum;)
+						{
+							$('.pagination').append('<li data-page="'+i+'" >\<span>'+ i++ +'<span class="sr-only">(current)</span></span>\</li>').show();
+						}
+					}
+		//aqui se pone en activo la primera casilla de la paginacion			
+					$('.pagination li:first-child').addClass('active');
+						
+						$('.pagination li').on('click', function(){
+							var pageNum = $(this).attr('data-page');
+							var trIndex = 0;
+							$('.pagination li').removeClass('active');
+							$(this).addClass('active');
+						
+								$(table+' tr:gt(0)').each(function(){
+									trIndex++;
+									if(trIndex > (maxRows*pageNum) || trIndex <= ((maxRows*pageNum)-maxRows))
+									{
+										$(this).hide();
+									}else{
+										$(this).show();
+									}
+								});
+						});
+		/////////////////////
+							  
+						}
+					})
+			}// final de radio_indicador=="radio_fecha"
+
+		
+
+//----------------------------------------------------------------
+
+
+	//esta es la parte cuando se elige una cantidad fija de registros
+	    	if(radio_indicador=="radio_ran")
+	    	{ 
+	    		
+
+	    		var cantidad_filas = $("#cant_filas").val();
+	    		//alert(cantidad_filas);
+		var dataString5="nombre_funcion="+"a_transaccion"+"&telefono_transaccion="+n_session+"&key_transaccion="+"232";
+
+		$.ajax({
+				type: "POST",
+				url:"../api/api.php",
+				data: dataString5,
+				crossDomain: true,
+				cache: false,
+
+				success: function(data){
+
+					var datos_tabla_general_m =$('#tabla_general_movimientos');
+					var datosString5 = $.parseJSON(data);
+					console.log(datosString5);
+					
+					datos_tabla_general_m.text("");
+					var contador =0;
+
+					$.each(datosString5,function(i,field){
+
+					if(contador!=cantidad_filas)
+					{ 
+						var fecha=field.fecha;
+						var movimiento=field.descripcion;
+						var valor = field.valor;
+						var saldo=field.saldo;
+						var concepto = field.observacion;
+						var usuario = field.nombre_cliente;
+
+						var dia_ini = fecha.substring(8,10);
+		    			var mes_ini = fecha.substring(5,7);
+		    			var anio_ini = fecha.substring(0,4);
+		    			var fecha2 =dia_ini+'-'+mes_ini+'-'+anio_ini;
+					
+						
+					if(valor <0)
+					{ 
+						datos_tabla_general_m.append('<tr><td>'+fecha2+'</td><td>'+concepto+'</td><td>'+movimiento+'</td><td>'+'+'+n_session+' ('+usuario+')'+'</td><td style="color:red;">'+valor+'</td><td>'+'$'+saldo+'</td></tr>');
+					}
+					if(valor>=0)
+					{
+						datos_tabla_general_m.append('<tr><td>'+fecha2+'</td><td>'+concepto+'</td><td>'+movimiento+'</td><td>'+'+'+n_session+' ('+usuario+')'+'</td><td style="color:#00FF00;">'+valor+'</td><td>'+'$'+saldo+'</td></tr>');
+
+						//datos_tabla_general_m.append('<tr><td>'+fecha2+'</td><td>'+concepto+'</td><td style="color:#00FF00;">'+valor+'</td><td>'+'$'+saldo+'</td></tr>');	
+					}
+
+
+
+		//////////////////
+					var table = "#mitabla";
+					$('.pagination').html('');
+					var trnum = 0;
+					//aqui obtiene el valor de la lista de numeros de registros
+					var maxRows = 10;
+		//aqui calcula la cantidad de registros que hay en la tabla			
+					var totalRows = $(table+' tbody tr').length;
+					//alert(totalRows);
+					$(table+' tr:gt(0)').each(function(){
+						trnum++;
+						if(trnum > maxRows)
+						{
+							$(this).hide();
+						}
+						if (trnum <= maxRows)
+						{
+							$(this).show();
+						}
+					});
+
+					if (totalRows > maxRows)
+					{
+						var pagenum = Math.ceil(totalRows/maxRows);
+						for(var i = 1; i <=pagenum;)
+						{
+							$('.pagination').append('<li data-page="'+i+'" >\<span>'+ i++ +'<span class="sr-only">(current)</span></span>\</li>').show();
+						}
+					}
+		//aqui se pone en activo la primera casilla de la paginacion			
+					$('.pagination li:first-child').addClass('active');
+						
+						$('.pagination li').on('click', function(){
+							var pageNum = $(this).attr('data-page');
+							var trIndex = 0;
+							$('.pagination li').removeClass('active');
+							$(this).addClass('active');
+						
+								$(table+' tr:gt(0)').each(function(){
+									trIndex++;
+									if(trIndex > (maxRows*pageNum) || trIndex <= ((maxRows*pageNum)-maxRows))
+									{
+										$(this).hide();
+									}else{
+										$(this).show();
+									}
+								});
+						});
+		/////////////////////
+						contador = contador+1;
+					}
+					$("#total_filas").text(contador);
+				});
+	  
+				}
+			})	
+
+	    	}
+
+		});//-------------------------------------------
+
+
+
+
+	  $("#v_perfil").click(function(e){
+	  //	e.preventDefault();
+	    
+/*
+					var f_n_u = datosString2.fecha_nacimiento;
+					var id_u = datosString2.id;
+					var n_u = datosString2.nombre;
+					var p_u = datosString2.pin;
+					var sex_u = datosString2.sexo;
+					var tlf_u = datosString2.telefono; 
+					var c_u = datosString2.correo; 
+
+alert(c_u+" "+tlf_u);
+	    $("#numero_tele2").val(n_session);
+	    $("#numero_tele3").val("+"+n_session);
+	    $("#nombre").val(n_u);
+	    $("#numero_pin").val(p_u);
+	    $("#correo").val(c_u);
+	    $("#f_nacimiento").val(f_n_u);
+*/});
+
+
+
+
+
+
+	  
+
+
+
+
+
+	  $("[id='numerot']").attr("value",n_session);
+		$("#qr").qrcode({'text':n_session});
+
+	////esta es la ventana modal de mi QR, y en donde se carga el numero de telefono
+	  $("#b_modal_qr").click(function(){
+	    $("#modal_mi_qr").modal();
+
+	    $("#num_tel").text("+"+n_session);
+	   
+	  });
+
+
+	  $("#b_modal_qr2").click(function(){
+	    $("#modal_mi_qr").modal();
+
+	    $("#num_tel").text("+"+n_session);
+	   
+	  });
+	}
+//alert(n_session+"rererer");
+
+
+
+});
+</script>
+
+<script>
+	/*
+ * International Telephone Input v12.1.0
+ * https://github.com/jackocnr/intl-tel-input.git
+ * Licensed under the MIT license
+ */
+
+!function(a){"function"==typeof define&&define.amd?define(["jquery"],function(b){a(b,window,document)}):"object"==typeof module&&module.exports?module.exports=a(require("jquery"),window,document):a(jQuery,window,document)}(function(a,b,c,d){"use strict";function e(b,c){this.a=a(b),this.b=a.extend({},h,c),this.ns="."+f+g++,this.d=Boolean(b.setSelectionRange),this.e=Boolean(a(b).attr("placeholder"))}var f="intlTelInput",g=1,h={allowDropdown:!0,autoHideDialCode:!0,autoPlaceholder:"polite",customPlaceholder:null,dropdownContainer:"",excludeCountries:[],formatOnDisplay:!0,geoIpLookup:null,hiddenInput:"",initialCountry:"",nationalMode:!0,onlyCountries:[],placeholderNumberType:"MOBILE",preferredCountries:["us","gb"],separateDialCode:!1,utilsScript:""},i={b:38,c:40,d:13,e:27,f:43,A:65,Z:90,j:32,k:9},j=["800","822","833","844","855","866","877","880","881","882","883","884","885","886","887","888","889"];a(b).on("load",function(){a.fn[f].windowLoaded=!0}),e.prototype={_a:function(){return this.b.nationalMode&&(this.b.autoHideDialCode=!1),this.b.separateDialCode&&(this.b.autoHideDialCode=this.b.nationalMode=!1),this.g=/Android.+Mobile|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent),this.g&&(a("body").addClass("iti-mobile"),this.b.dropdownContainer||(this.b.dropdownContainer="body")),this.h=new a.Deferred,this.i=new a.Deferred,this.s={},this._b(),this._f(),this._h(),this._i(),this._i2(),[this.h,this.i]},_b:function(){this._d(),this._d2(),this._e()},_c:function(a,b,c){b in this.q||(this.q[b]=[]);var d=c||0;this.q[b][d]=a},_d:function(){if(this.b.onlyCountries.length){var a=this.b.onlyCountries.map(function(a){return a.toLowerCase()});this.p=k.filter(function(b){return a.indexOf(b.iso2)>-1})}else if(this.b.excludeCountries.length){var b=this.b.excludeCountries.map(function(a){return a.toLowerCase()});this.p=k.filter(function(a){return-1===b.indexOf(a.iso2)})}else this.p=k},_d2:function(){this.q={};for(var a=0;a<this.p.length;a++){var b=this.p[a];if(this._c(b.iso2,b.dialCode,b.priority),b.areaCodes)for(var c=0;c<b.areaCodes.length;c++)this._c(b.iso2,b.dialCode+b.areaCodes[c])}},_e:function(){this.preferredCountries=[];for(var a=0;a<this.b.preferredCountries.length;a++){var b=this.b.preferredCountries[a].toLowerCase(),c=this._y(b,!1,!0);c&&this.preferredCountries.push(c)}},_f:function(){this.a.attr("autocomplete","off");var b="intl-tel-input";this.b.allowDropdown&&(b+=" allow-dropdown"),this.b.separateDialCode&&(b+=" separate-dial-code"),this.a.wrap(a("<div>",{"class":b})),this.k=a("<div>",{"class":"flag-container"}).insertBefore(this.a);var c=a("<div>",{"class":"selected-flag"});c.appendTo(this.k),this.l=a("<div>",{"class":"iti-flag"}).appendTo(c),this.b.separateDialCode&&(this.t=a("<div>",{"class":"selected-dial-code"}).appendTo(c)),this.b.allowDropdown?(c.attr("tabindex","0"),a("<div>",{"class":"iti-arrow"}).appendTo(c),this.m=a("<ul>",{"class":"country-list hide"}),this.preferredCountries.length&&(this._g(this.preferredCountries,"preferred"),a("<li>",{"class":"divider"}).appendTo(this.m)),this._g(this.p,""),this.o=this.m.children(".country"),this.b.dropdownContainer?this.dropdown=a("<div>",{"class":"intl-tel-input iti-container"}).append(this.m):this.m.appendTo(this.k)):this.o=a(),this.b.hiddenInput&&(this.hiddenInput=a("<input>",{type:"hidden",name:this.b.hiddenInput}).insertBefore(this.a))},_g:function(a,b){for(var c="",d=0;d<a.length;d++){var e=a[d];c+="<li class='country "+b+"' data-dial-code='"+e.dialCode+"' data-country-code='"+e.iso2+"'>",c+="<div class='flag-box'><div class='iti-flag "+e.iso2+"'></div></div>",c+="<span class='country-name'>"+e.name+"</span>",c+="<span class='dial-code'>+"+e.dialCode+"</span>",c+="</li>"}this.m.append(c)},_h:function(){var a=this.a.val();this._af(a)&&(!this._isRegionlessNanp(a)||this.b.nationalMode&&!this.b.initialCountry)?this._v(a):"auto"!==this.b.initialCountry&&(this.b.initialCountry?this._z(this.b.initialCountry.toLowerCase()):(this.j=this.preferredCountries.length?this.preferredCountries[0].iso2:this.p[0].iso2,a||this._z(this.j)),a||this.b.nationalMode||this.b.autoHideDialCode||this.b.separateDialCode||this.a.val("+"+this.s.dialCode)),a&&this._u(a)},_i:function(){this._j(),this.b.autoHideDialCode&&this._l(),this.b.allowDropdown&&this._i1(),this.hiddenInput&&this._initHiddenInputListener()},_initHiddenInputListener:function(){var a=this,b=this.a.closest("form");b.length&&b.submit(function(){a.hiddenInput.val(a.getNumber())})},_i1:function(){var a=this,b=this.a.closest("label");b.length&&b.on("click"+this.ns,function(b){a.m.hasClass("hide")?a.a.focus():b.preventDefault()}),this.l.parent().on("click"+this.ns,function(b){!a.m.hasClass("hide")||a.a.prop("disabled")||a.a.prop("readonly")||a._n()}),this.k.on("keydown"+a.ns,function(b){!a.m.hasClass("hide")||b.which!=i.b&&b.which!=i.c&&b.which!=i.j&&b.which!=i.d||(b.preventDefault(),b.stopPropagation(),a._n()),b.which==i.k&&a._ac()})},_i2:function(){var c=this;this.b.utilsScript?a.fn[f].windowLoaded?a.fn[f].loadUtils(this.b.utilsScript,this.i):a(b).on("load",function(){a.fn[f].loadUtils(c.b.utilsScript,c.i)}):this.i.resolve(),"auto"===this.b.initialCountry?this._i3():this.h.resolve()},_i3:function(){a.fn[f].autoCountry?this.handleAutoCountry():a.fn[f].startedLoadingAutoCountry||(a.fn[f].startedLoadingAutoCountry=!0,"function"==typeof this.b.geoIpLookup&&this.b.geoIpLookup(function(b){a.fn[f].autoCountry=b.toLowerCase(),setTimeout(function(){a(".intl-tel-input input").intlTelInput("handleAutoCountry")})}))},_j:function(){var a=this;this.a.on("keyup"+this.ns,function(){a._v(a.a.val())&&a._triggerCountryChange()}),this.a.on("cut"+this.ns+" paste"+this.ns,function(){setTimeout(function(){a._v(a.a.val())&&a._triggerCountryChange()})})},_j2:function(a){var b=this.a.attr("maxlength");return b&&a.length>b?a.substr(0,b):a},_l:function(){var b=this;this.a.on("mousedown"+this.ns,function(a){b.a.is(":focus")||b.a.val()||(a.preventDefault(),b.a.focus())}),this.a.on("focus"+this.ns,function(a){b.a.val()||b.a.prop("readonly")||!b.s.dialCode||(b.a.val("+"+b.s.dialCode),b.a.one("keypress.plus"+b.ns,function(a){a.which==i.f&&b.a.val("")}),setTimeout(function(){var a=b.a[0];if(b.d){var c=b.a.val().length;a.setSelectionRange(c,c)}}))});var c=this.a.prop("form");c&&a(c).on("submit"+this.ns,function(){b._removeEmptyDialCode()}),this.a.on("blur"+this.ns,function(){b._removeEmptyDialCode()})},_removeEmptyDialCode:function(){var a=this.a.val();if("+"==a.charAt(0)){var b=this._m(a);b&&this.s.dialCode!=b||this.a.val("")}this.a.off("keypress.plus"+this.ns)},_m:function(a){return a.replace(/\D/g,"")},_n:function(){this._o();var a=this.m.children(".active");a.length&&(this._x(a),this._ad(a)),this._p(),this.l.children(".iti-arrow").addClass("up"),this.a.trigger("open:countrydropdown")},_o:function(){var c=this;if(this.b.dropdownContainer&&this.dropdown.appendTo(this.b.dropdownContainer),this.n=this.m.removeClass("hide").outerHeight(),!this.g){var d=this.a.offset(),e=d.top,f=a(b).scrollTop(),g=e+this.a.outerHeight()+this.n<f+a(b).height(),h=e-this.n>f;if(this.m.toggleClass("dropup",!g&&h),this.b.dropdownContainer){var i=!g&&h?0:this.a.innerHeight();this.dropdown.css({top:e+i,left:d.left}),a(b).on("scroll"+this.ns,function(){c._ac()})}}},_p:function(){var b=this;this.m.on("mouseover"+this.ns,".country",function(c){b._x(a(this))}),this.m.on("click"+this.ns,".country",function(c){b._ab(a(this))});var d=!0;a("html").on("click"+this.ns,function(a){d||b._ac(),d=!1});var e="",f=null;a(c).on("keydown"+this.ns,function(a){a.preventDefault(),a.which==i.b||a.which==i.c?b._q(a.which):a.which==i.d?b._r():a.which==i.e?b._ac():(a.which>=i.A&&a.which<=i.Z||a.which==i.j)&&(f&&clearTimeout(f),e+=String.fromCharCode(a.which),b._s(e),f=setTimeout(function(){e=""},1e3))})},_q:function(a){var b=this.m.children(".highlight").first(),c=a==i.b?b.prev():b.next();c.length&&(c.hasClass("divider")&&(c=a==i.b?c.prev():c.next()),this._x(c),this._ad(c))},_r:function(){var a=this.m.children(".highlight").first();a.length&&this._ab(a)},_s:function(a){for(var b=0;b<this.p.length;b++)if(this._t(this.p[b].name,a)){var c=this.m.children("[data-country-code="+this.p[b].iso2+"]").not(".preferred");this._x(c),this._ad(c,!0);break}},_t:function(a,b){return a.substr(0,b.length).toUpperCase()==b},_u:function(a){if(this.b.formatOnDisplay&&b.intlTelInputUtils&&this.s){var c=this.b.separateDialCode||!this.b.nationalMode&&"+"==a.charAt(0)?intlTelInputUtils.numberFormat.INTERNATIONAL:intlTelInputUtils.numberFormat.NATIONAL;a=intlTelInputUtils.formatNumber(a,this.s.iso2,c)}a=this._ah(a),this.a.val(a)},_v:function(b){b&&this.b.nationalMode&&"1"==this.s.dialCode&&"+"!=b.charAt(0)&&("1"!=b.charAt(0)&&(b="1"+b),b="+"+b);var c=this._af(b),d=null,e=this._m(b);if(c){var f=this.q[this._m(c)],g=a.inArray(this.s.iso2,f)>-1,h="+1"==c&&e.length>=4;if((!("1"==this.s.dialCode)||!this._isRegionlessNanp(e))&&(!g||h))for(var i=0;i<f.length;i++)if(f[i]){d=f[i];break}}else"+"==b.charAt(0)&&e.length?d="":b&&"+"!=b||(d=this.j);return null!==d&&this._z(d)},_isRegionlessNanp:function(b){var c=this._m(b);if("1"==c.charAt(0)){var d=c.substr(1,3);return a.inArray(d,j)>-1}return!1},_x:function(a){this.o.removeClass("highlight"),a.addClass("highlight")},_y:function(a,b,c){for(var d=b?k:this.p,e=0;e<d.length;e++)if(d[e].iso2==a)return d[e];if(c)return null;throw new Error("No country data for '"+a+"'")},_z:function(a){var b=this.s.iso2?this.s:{};this.s=a?this._y(a,!1,!1):{},this.s.iso2&&(this.j=this.s.iso2),this.l.attr("class","iti-flag "+a);var c=a?this.s.name+": +"+this.s.dialCode:"Unknown";if(this.l.parent().attr("title",c),this.b.separateDialCode){var d=this.s.dialCode?"+"+this.s.dialCode:"",e=this.a.parent();b.dialCode&&e.removeClass("iti-sdc-"+(b.dialCode.length+1)),d&&e.addClass("iti-sdc-"+d.length),this.t.text(d)}return this._aa(),this.o.removeClass("active"),a&&this.o.find(".iti-flag."+a).first().closest(".country").addClass("active"),b.iso2!==a},_aa:function(){var a="aggressive"===this.b.autoPlaceholder||!this.e&&(!0===this.b.autoPlaceholder||"polite"===this.b.autoPlaceholder);if(b.intlTelInputUtils&&a){var c=intlTelInputUtils.numberType[this.b.placeholderNumberType],d=this.s.iso2?intlTelInputUtils.getExampleNumber(this.s.iso2,this.b.nationalMode,c):"";d=this._ah(d),"function"==typeof this.b.customPlaceholder&&(d=this.b.customPlaceholder(d,this.s)),this.a.attr("placeholder",d)}},_ab:function(a){var b=this._z(a.attr("data-country-code"));if(this._ac(),this._ae(a.attr("data-dial-code"),!0),this.a.focus(),this.d){var c=this.a.val().length;this.a[0].setSelectionRange(c,c)}b&&this._triggerCountryChange()},_ac:function(){this.m.addClass("hide"),this.l.children(".iti-arrow").removeClass("up"),a(c).off(this.ns),a("html").off(this.ns),this.m.off(this.ns),this.b.dropdownContainer&&(this.g||a(b).off("scroll"+this.ns),this.dropdown.detach()),this.a.trigger("close:countrydropdown")},_ad:function(a,b){var c=this.m,d=c.height(),e=c.offset().top,f=e+d,g=a.outerHeight(),h=a.offset().top,i=h+g,j=h-e+c.scrollTop(),k=d/2-g/2;if(h<e)b&&(j-=k),c.scrollTop(j);else if(i>f){b&&(j+=k);var l=d-g;c.scrollTop(j-l)}},_ae:function(a,b){var c,d=this.a.val();if(a="+"+a,"+"==d.charAt(0)){var e=this._af(d);c=e?d.replace(e,a):a}else{if(this.b.nationalMode||this.b.separateDialCode)return;if(d)c=a+d;else{if(!b&&this.b.autoHideDialCode)return;c=a}}this.a.val(c)},_af:function(b){var c="";if("+"==b.charAt(0))for(var d="",e=0;e<b.length;e++){var f=b.charAt(e);if(a.isNumeric(f)&&(d+=f,this.q[d]&&(c=b.substr(0,e+1)),4==d.length))break}return c},_ag:function(){var b=a.trim(this.a.val()),c=this.s.dialCode,d=this._m(b),e="1"==d.charAt(0)?d:"1"+d;return(this.b.separateDialCode?"+"+c:"+"!=b.charAt(0)&&"1"!=b.charAt(0)&&c&&"1"==c.charAt(0)&&4==c.length&&c!=e.substr(0,4)?c.substr(1):"")+b},_ah:function(a){if(this.b.separateDialCode){var b=this._af(a);if(b){null!==this.s.areaCodes&&(b="+"+this.s.dialCode);var c=" "===a[b.length]||"-"===a[b.length]?b.length+1:b.length;a=a.substr(c)}}return this._j2(a)},_triggerCountryChange:function(){this.a.trigger("countrychange",this.s)},handleAutoCountry:function(){"auto"===this.b.initialCountry&&(this.j=a.fn[f].autoCountry,this.a.val()||this.setCountry(this.j),this.h.resolve())},handleUtils:function(){b.intlTelInputUtils&&(this.a.val()&&this._u(this.a.val()),this._aa()),this.i.resolve()},destroy:function(){if(this.allowDropdown&&(this._ac(),this.l.parent().off(this.ns),this.a.closest("label").off(this.ns)),this.b.autoHideDialCode){var b=this.a.prop("form");b&&a(b).off(this.ns)}this.a.off(this.ns),this.a.parent().before(this.a).remove()},getExtension:function(){return b.intlTelInputUtils?intlTelInputUtils.getExtension(this._ag(),this.s.iso2):""},getNumber:function(a){return b.intlTelInputUtils?intlTelInputUtils.formatNumber(this._ag(),this.s.iso2,a):""},getNumberType:function(){return b.intlTelInputUtils?intlTelInputUtils.getNumberType(this._ag(),this.s.iso2):-99},getSelectedCountryData:function(){return this.s},getValidationError:function(){return b.intlTelInputUtils?intlTelInputUtils.getValidationError(this._ag(),this.s.iso2):-99},isValidNumber:function(){var c=a.trim(this._ag()),d=this.b.nationalMode?this.s.iso2:"";return b.intlTelInputUtils?intlTelInputUtils.isValidNumber(c,d):null},setCountry:function(a){a=a.toLowerCase(),this.l.hasClass(a)||(this._z(a),this._ae(this.s.dialCode,!1),this._triggerCountryChange())},setNumber:function(a){var b=this._v(a);this._u(a),b&&this._triggerCountryChange()},setPlaceholderNumberType:function(a){this.b.placeholderNumberType=a,this._aa()}},a.fn[f]=function(b){var c=arguments;if(b===d||"object"==typeof b){var g=[];return this.each(function(){if(!a.data(this,"plugin_"+f)){var c=new e(this,b),d=c._a();g.push(d[0]),g.push(d[1]),a.data(this,"plugin_"+f,c)}}),a.when.apply(null,g)}if("string"==typeof b&&"_"!==b[0]){var h;return this.each(function(){var d=a.data(this,"plugin_"+f);d instanceof e&&"function"==typeof d[b]&&(h=d[b].apply(d,Array.prototype.slice.call(c,1))),"destroy"===b&&a.data(this,"plugin_"+f,null)}),h!==d?h:this}},a.fn[f].getCountryData=function(){return k},a.fn[f].loadUtils=function(b,c){a.fn[f].loadedUtilsScript?c&&c.resolve():(a.fn[f].loadedUtilsScript=!0,a.ajax({type:"GET",url:b,complete:function(){a(".intl-tel-input input").intlTelInput("handleUtils")},dataType:"script",cache:!0}))},a.fn[f].defaults=h,a.fn[f].version="12.1.0";for(var k=[["Afghanistan (‫افغانستان‬‎)","af","93"],["Albania (Shqipëri)","al","355"],["Algeria (‫الجزائر‬‎)","dz","213"],["American Samoa","as","1684"],["Andorra","ad","376"],["Angola","ao","244"],["Anguilla","ai","1264"],["Antigua and Barbuda","ag","1268"],["Argentina","ar","54"],["Armenia (Հայաստան)","am","374"],["Aruba","aw","297"],["Australia","au","61",0],["Austria (Österreich)","at","43"],["Azerbaijan (Azərbaycan)","az","994"],["Bahamas","bs","1242"],["Bahrain (‫البحرين‬‎)","bh","973"],["Bangladesh (বাংলাদেশ)","bd","880"],["Barbados","bb","1246"],["Belarus (Беларусь)","by","375"],["Belgium (België)","be","32"],["Belize","bz","501"],["Benin (Bénin)","bj","229"],["Bermuda","bm","1441"],["Bhutan (འབྲུག)","bt","975"],["Bolivia","bo","591"],["Bosnia and Herzegovina (Босна и Херцеговина)","ba","387"],["Botswana","bw","267"],["Brazil (Brasil)","br","55"],["British Indian Ocean Territory","io","246"],["British Virgin Islands","vg","1284"],["Brunei","bn","673"],["Bulgaria (България)","bg","359"],["Burkina Faso","bf","226"],["Burundi (Uburundi)","bi","257"],["Cambodia (កម្ពុជា)","kh","855"],["Cameroon (Cameroun)","cm","237"],["Canada","ca","1",1,["204","226","236","249","250","289","306","343","365","387","403","416","418","431","437","438","450","506","514","519","548","579","581","587","604","613","639","647","672","705","709","742","778","780","782","807","819","825","867","873","902","905"]],["Cape Verde (Kabu Verdi)","cv","238"],["Caribbean Netherlands","bq","599",1],["Cayman Islands","ky","1345"],["Central African Republic (République centrafricaine)","cf","236"],["Chad (Tchad)","td","235"],["Chile","cl","56"],["China (中国)","cn","86"],["Christmas Island","cx","61",2],["Cocos (Keeling) Islands","cc","61",1],["Colombia","co","57"],["Comoros (‫جزر القمر‬‎)","km","269"],["Congo (DRC) (Jamhuri ya Kidemokrasia ya Kongo)","cd","243"],["Congo (Republic) (Congo-Brazzaville)","cg","242"],["Cook Islands","ck","682"],["Costa Rica","cr","506"],["Côte d’Ivoire","ci","225"],["Croatia (Hrvatska)","hr","385"],["Cuba","cu","53"],["Curaçao","cw","599",0],["Cyprus (Κύπρος)","cy","357"],["Czech Republic (Česká republika)","cz","420"],["Denmark (Danmark)","dk","45"],["Djibouti","dj","253"],["Dominica","dm","1767"],["Dominican Republic (República Dominicana)","do","1",2,["809","829","849"]],["Ecuador","ec","593"],["Egypt (‫مصر‬‎)","eg","20"],["El Salvador","sv","503"],["Equatorial Guinea (Guinea Ecuatorial)","gq","240"],["Eritrea","er","291"],["Estonia (Eesti)","ee","372"],["Ethiopia","et","251"],["Falkland Islands (Islas Malvinas)","fk","500"],["Faroe Islands (Føroyar)","fo","298"],["Fiji","fj","679"],["Finland (Suomi)","fi","358",0],["France","fr","33"],["French Guiana (Guyane française)","gf","594"],["French Polynesia (Polynésie française)","pf","689"],["Gabon","ga","241"],["Gambia","gm","220"],["Georgia (საქართველო)","ge","995"],["Germany (Deutschland)","de","49"],["Ghana (Gaana)","gh","233"],["Gibraltar","gi","350"],["Greece (Ελλάδα)","gr","30"],["Greenland (Kalaallit Nunaat)","gl","299"],["Grenada","gd","1473"],["Guadeloupe","gp","590",0],["Guam","gu","1671"],["Guatemala","gt","502"],["Guernsey","gg","44",1],["Guinea (Guinée)","gn","224"],["Guinea-Bissau (Guiné Bissau)","gw","245"],["Guyana","gy","592"],["Haiti","ht","509"],["Honduras","hn","504"],["Hong Kong (香港)","hk","852"],["Hungary (Magyarország)","hu","36"],["Iceland (Ísland)","is","354"],["India (भारत)","in","91"],["Indonesia","id","62"],["Iran (‫ایران‬‎)","ir","98"],["Iraq (‫العراق‬‎)","iq","964"],["Ireland","ie","353"],["Isle of Man","im","44",2],["Israel (‫ישראל‬‎)","il","972"],["Italy (Italia)","it","39",0],["Jamaica","jm","1876"],["Japan (日本)","jp","81"],["Jersey","je","44",3],["Jordan (‫الأردن‬‎)","jo","962"],["Kazakhstan (Казахстан)","kz","7",1],["Kenya","ke","254"],["Kiribati","ki","686"],["Kosovo","xk","383"],["Kuwait (‫الكويت‬‎)","kw","965"],["Kyrgyzstan (Кыргызстан)","kg","996"],["Laos (ລາວ)","la","856"],["Latvia (Latvija)","lv","371"],["Lebanon (‫لبنان‬‎)","lb","961"],["Lesotho","ls","266"],["Liberia","lr","231"],["Libya (‫ليبيا‬‎)","ly","218"],["Liechtenstein","li","423"],["Lithuania (Lietuva)","lt","370"],["Luxembourg","lu","352"],["Macau (澳門)","mo","853"],["Macedonia (FYROM) (Македонија)","mk","389"],["Madagascar (Madagasikara)","mg","261"],["Malawi","mw","265"],["Malaysia","my","60"],["Maldives","mv","960"],["Mali","ml","223"],["Malta","mt","356"],["Marshall Islands","mh","692"],["Martinique","mq","596"],["Mauritania (‫موريتانيا‬‎)","mr","222"],["Mauritius (Moris)","mu","230"],["Mayotte","yt","262",1],["Mexico (México)","mx","52"],["Micronesia","fm","691"],["Moldova (Republica Moldova)","md","373"],["Monaco","mc","377"],["Mongolia (Монгол)","mn","976"],["Montenegro (Crna Gora)","me","382"],["Montserrat","ms","1664"],["Morocco (‫المغرب‬‎)","ma","212",0],["Mozambique (Moçambique)","mz","258"],["Myanmar (Burma) (မြန်မာ)","mm","95"],["Namibia (Namibië)","na","264"],["Nauru","nr","674"],["Nepal (नेपाल)","np","977"],["Netherlands (Nederland)","nl","31"],["New Caledonia (Nouvelle-Calédonie)","nc","687"],["New Zealand","nz","64"],["Nicaragua","ni","505"],["Niger (Nijar)","ne","227"],["Nigeria","ng","234"],["Niue","nu","683"],["Norfolk Island","nf","672"],["North Korea (조선 민주주의 인민 공화국)","kp","850"],["Northern Mariana Islands","mp","1670"],["Norway (Norge)","no","47",0],["Oman (‫عُمان‬‎)","om","968"],["Pakistan (‫پاکستان‬‎)","pk","92"],["Palau","pw","680"],["Palestine (‫فلسطين‬‎)","ps","970"],["Panama (Panamá)","pa","507"],["Papua New Guinea","pg","675"],["Paraguay","py","595"],["Peru (Perú)","pe","51"],["Philippines","ph","63"],["Poland (Polska)","pl","48"],["Portugal","pt","351"],["Puerto Rico","pr","1",3,["787","939"]],["Qatar (‫قطر‬‎)","qa","974"],["Réunion (La Réunion)","re","262",0],["Romania (România)","ro","40"],["Russia (Россия)","ru","7",0],["Rwanda","rw","250"],["Saint Barthélemy","bl","590",1],["Saint Helena","sh","290"],["Saint Kitts and Nevis","kn","1869"],["Saint Lucia","lc","1758"],["Saint Martin (Saint-Martin (partie française))","mf","590",2],["Saint Pierre and Miquelon (Saint-Pierre-et-Miquelon)","pm","508"],["Saint Vincent and the Grenadines","vc","1784"],["Samoa","ws","685"],["San Marino","sm","378"],["São Tomé and Príncipe (São Tomé e Príncipe)","st","239"],["Saudi Arabia (‫المملكة العربية السعودية‬‎)","sa","966"],["Senegal (Sénégal)","sn","221"],["Serbia (Србија)","rs","381"],["Seychelles","sc","248"],["Sierra Leone","sl","232"],["Singapore","sg","65"],["Sint Maarten","sx","1721"],["Slovakia (Slovensko)","sk","421"],["Slovenia (Slovenija)","si","386"],["Solomon Islands","sb","677"],["Somalia (Soomaaliya)","so","252"],["South Africa","za","27"],["South Korea (대한민국)","kr","82"],["South Sudan (‫جنوب السودان‬‎)","ss","211"],["Spain (España)","es","34"],["Sri Lanka (ශ්‍රී ලංකාව)","lk","94"],["Sudan (‫السودان‬‎)","sd","249"],["Suriname","sr","597"],["Svalbard and Jan Mayen","sj","47",1],["Swaziland","sz","268"],["Sweden (Sverige)","se","46"],["Switzerland (Schweiz)","ch","41"],["Syria (‫سوريا‬‎)","sy","963"],["Taiwan (台灣)","tw","886"],["Tajikistan","tj","992"],["Tanzania","tz","255"],["Thailand (ไทย)","th","66"],["Timor-Leste","tl","670"],["Togo","tg","228"],["Tokelau","tk","690"],["Tonga","to","676"],["Trinidad and Tobago","tt","1868"],["Tunisia (‫تونس‬‎)","tn","216"],["Turkey (Türkiye)","tr","90"],["Turkmenistan","tm","993"],["Turks and Caicos Islands","tc","1649"],["Tuvalu","tv","688"],["U.S. Virgin Islands","vi","1340"],["Uganda","ug","256"],["Ukraine (Україна)","ua","380"],["United Arab Emirates (‫الإمارات العربية المتحدة‬‎)","ae","971"],["United Kingdom","gb","44",0],["United States","us","1",0],["Uruguay","uy","598"],["Uzbekistan (Oʻzbekiston)","uz","998"],["Vanuatu","vu","678"],["Vatican City (Città del Vaticano)","va","39",1],["Venezuela","ve","58"],["Vietnam (Việt Nam)","vn","84"],["Wallis and Futuna (Wallis-et-Futuna)","wf","681"],["Western Sahara (‫الصحراء الغربية‬‎)","eh","212",1],["Yemen (‫اليمن‬‎)","ye","967"],["Zambia","zm","260"],["Zimbabwe","zw","263"],["Åland Islands","ax","358",1]],l=0;l<k.length;l++){var m=k[l];k[l]={name:m[0],iso2:m[1],dialCode:m[2],priority:m[3]||0,areaCodes:m[4]||null}}});/*
+ * International Telephone Input v12.1.0
+ * https://github.com/jackocnr/intl-tel-input.git
+ * Licensed under the MIT license
+ */
+
+!function(a){"function"==typeof define&&define.amd?define(["jquery"],function(b){a(b,window,document)}):"object"==typeof module&&module.exports?module.exports=a(require("jquery"),window,document):a(jQuery,window,document)}(function(a,b,c,d){"use strict";function e(b,c){this.a=a(b),this.b=a.extend({},h,c),this.ns="."+f+g++,this.d=Boolean(b.setSelectionRange),this.e=Boolean(a(b).attr("placeholder"))}var f="intlTelInput",g=1,h={allowDropdown:!0,autoHideDialCode:!0,autoPlaceholder:"polite",customPlaceholder:null,dropdownContainer:"",excludeCountries:[],formatOnDisplay:!0,geoIpLookup:null,hiddenInput:"",initialCountry:"",nationalMode:!0,onlyCountries:[],placeholderNumberType:"MOBILE",preferredCountries:["us","gb"],separateDialCode:!1,utilsScript:""},i={b:38,c:40,d:13,e:27,f:43,A:65,Z:90,j:32,k:9},j=["800","822","833","844","855","866","877","880","881","882","883","884","885","886","887","888","889"];a(b).on("load",function(){a.fn[f].windowLoaded=!0}),e.prototype={_a:function(){return this.b.nationalMode&&(this.b.autoHideDialCode=!1),this.b.separateDialCode&&(this.b.autoHideDialCode=this.b.nationalMode=!1),this.g=/Android.+Mobile|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent),this.g&&(a("body").addClass("iti-mobile"),this.b.dropdownContainer||(this.b.dropdownContainer="body")),this.h=new a.Deferred,this.i=new a.Deferred,this.s={},this._b(),this._f(),this._h(),this._i(),this._i2(),[this.h,this.i]},_b:function(){this._d(),this._d2(),this._e()},_c:function(a,b,c){b in this.q||(this.q[b]=[]);var d=c||0;this.q[b][d]=a},_d:function(){if(this.b.onlyCountries.length){var a=this.b.onlyCountries.map(function(a){return a.toLowerCase()});this.p=k.filter(function(b){return a.indexOf(b.iso2)>-1})}else if(this.b.excludeCountries.length){var b=this.b.excludeCountries.map(function(a){return a.toLowerCase()});this.p=k.filter(function(a){return-1===b.indexOf(a.iso2)})}else this.p=k},_d2:function(){this.q={};for(var a=0;a<this.p.length;a++){var b=this.p[a];if(this._c(b.iso2,b.dialCode,b.priority),b.areaCodes)for(var c=0;c<b.areaCodes.length;c++)this._c(b.iso2,b.dialCode+b.areaCodes[c])}},_e:function(){this.preferredCountries=[];for(var a=0;a<this.b.preferredCountries.length;a++){var b=this.b.preferredCountries[a].toLowerCase(),c=this._y(b,!1,!0);c&&this.preferredCountries.push(c)}},_f:function(){this.a.attr("autocomplete","off");var b="intl-tel-input";this.b.allowDropdown&&(b+=" allow-dropdown"),this.b.separateDialCode&&(b+=" separate-dial-code"),this.a.wrap(a("<div>",{"class":b})),this.k=a("<div>",{"class":"flag-container"}).insertBefore(this.a);var c=a("<div>",{"class":"selected-flag"});c.appendTo(this.k),this.l=a("<div>",{"class":"iti-flag"}).appendTo(c),this.b.separateDialCode&&(this.t=a("<div>",{"class":"selected-dial-code"}).appendTo(c)),this.b.allowDropdown?(c.attr("tabindex","0"),a("<div>",{"class":"iti-arrow"}).appendTo(c),this.m=a("<ul>",{"class":"country-list hide"}),this.preferredCountries.length&&(this._g(this.preferredCountries,"preferred"),a("<li>",{"class":"divider"}).appendTo(this.m)),this._g(this.p,""),this.o=this.m.children(".country"),this.b.dropdownContainer?this.dropdown=a("<div>",{"class":"intl-tel-input iti-container"}).append(this.m):this.m.appendTo(this.k)):this.o=a(),this.b.hiddenInput&&(this.hiddenInput=a("<input>",{type:"hidden",name:this.b.hiddenInput}).insertBefore(this.a))},_g:function(a,b){for(var c="",d=0;d<a.length;d++){var e=a[d];c+="<li class='country "+b+"' data-dial-code='"+e.dialCode+"' data-country-code='"+e.iso2+"'>",c+="<div class='flag-box'><div class='iti-flag "+e.iso2+"'></div></div>",c+="<span class='country-name'>"+e.name+"</span>",c+="<span class='dial-code'>+"+e.dialCode+"</span>",c+="</li>"}this.m.append(c)},_h:function(){var a=this.a.val();this._af(a)&&(!this._isRegionlessNanp(a)||this.b.nationalMode&&!this.b.initialCountry)?this._v(a):"auto"!==this.b.initialCountry&&(this.b.initialCountry?this._z(this.b.initialCountry.toLowerCase()):(this.j=this.preferredCountries.length?this.preferredCountries[0].iso2:this.p[0].iso2,a||this._z(this.j)),a||this.b.nationalMode||this.b.autoHideDialCode||this.b.separateDialCode||this.a.val("+"+this.s.dialCode)),a&&this._u(a)},_i:function(){this._j(),this.b.autoHideDialCode&&this._l(),this.b.allowDropdown&&this._i1(),this.hiddenInput&&this._initHiddenInputListener()},_initHiddenInputListener:function(){var a=this,b=this.a.closest("form");b.length&&b.submit(function(){a.hiddenInput.val(a.getNumber())})},_i1:function(){var a=this,b=this.a.closest("label");b.length&&b.on("click"+this.ns,function(b){a.m.hasClass("hide")?a.a.focus():b.preventDefault()}),this.l.parent().on("click"+this.ns,function(b){!a.m.hasClass("hide")||a.a.prop("disabled")||a.a.prop("readonly")||a._n()}),this.k.on("keydown"+a.ns,function(b){!a.m.hasClass("hide")||b.which!=i.b&&b.which!=i.c&&b.which!=i.j&&b.which!=i.d||(b.preventDefault(),b.stopPropagation(),a._n()),b.which==i.k&&a._ac()})},_i2:function(){var c=this;this.b.utilsScript?a.fn[f].windowLoaded?a.fn[f].loadUtils(this.b.utilsScript,this.i):a(b).on("load",function(){a.fn[f].loadUtils(c.b.utilsScript,c.i)}):this.i.resolve(),"auto"===this.b.initialCountry?this._i3():this.h.resolve()},_i3:function(){a.fn[f].autoCountry?this.handleAutoCountry():a.fn[f].startedLoadingAutoCountry||(a.fn[f].startedLoadingAutoCountry=!0,"function"==typeof this.b.geoIpLookup&&this.b.geoIpLookup(function(b){a.fn[f].autoCountry=b.toLowerCase(),setTimeout(function(){a(".intl-tel-input input").intlTelInput("handleAutoCountry")})}))},_j:function(){var a=this;this.a.on("keyup"+this.ns,function(){a._v(a.a.val())&&a._triggerCountryChange()}),this.a.on("cut"+this.ns+" paste"+this.ns,function(){setTimeout(function(){a._v(a.a.val())&&a._triggerCountryChange()})})},_j2:function(a){var b=this.a.attr("maxlength");return b&&a.length>b?a.substr(0,b):a},_l:function(){var b=this;this.a.on("mousedown"+this.ns,function(a){b.a.is(":focus")||b.a.val()||(a.preventDefault(),b.a.focus())}),this.a.on("focus"+this.ns,function(a){b.a.val()||b.a.prop("readonly")||!b.s.dialCode||(b.a.val("+"+b.s.dialCode),b.a.one("keypress.plus"+b.ns,function(a){a.which==i.f&&b.a.val("")}),setTimeout(function(){var a=b.a[0];if(b.d){var c=b.a.val().length;a.setSelectionRange(c,c)}}))});var c=this.a.prop("form");c&&a(c).on("submit"+this.ns,function(){b._removeEmptyDialCode()}),this.a.on("blur"+this.ns,function(){b._removeEmptyDialCode()})},_removeEmptyDialCode:function(){var a=this.a.val();if("+"==a.charAt(0)){var b=this._m(a);b&&this.s.dialCode!=b||this.a.val("")}this.a.off("keypress.plus"+this.ns)},_m:function(a){return a.replace(/\D/g,"")},_n:function(){this._o();var a=this.m.children(".active");a.length&&(this._x(a),this._ad(a)),this._p(),this.l.children(".iti-arrow").addClass("up"),this.a.trigger("open:countrydropdown")},_o:function(){var c=this;if(this.b.dropdownContainer&&this.dropdown.appendTo(this.b.dropdownContainer),this.n=this.m.removeClass("hide").outerHeight(),!this.g){var d=this.a.offset(),e=d.top,f=a(b).scrollTop(),g=e+this.a.outerHeight()+this.n<f+a(b).height(),h=e-this.n>f;if(this.m.toggleClass("dropup",!g&&h),this.b.dropdownContainer){var i=!g&&h?0:this.a.innerHeight();this.dropdown.css({top:e+i,left:d.left}),a(b).on("scroll"+this.ns,function(){c._ac()})}}},_p:function(){var b=this;this.m.on("mouseover"+this.ns,".country",function(c){b._x(a(this))}),this.m.on("click"+this.ns,".country",function(c){b._ab(a(this))});var d=!0;a("html").on("click"+this.ns,function(a){d||b._ac(),d=!1});var e="",f=null;a(c).on("keydown"+this.ns,function(a){a.preventDefault(),a.which==i.b||a.which==i.c?b._q(a.which):a.which==i.d?b._r():a.which==i.e?b._ac():(a.which>=i.A&&a.which<=i.Z||a.which==i.j)&&(f&&clearTimeout(f),e+=String.fromCharCode(a.which),b._s(e),f=setTimeout(function(){e=""},1e3))})},_q:function(a){var b=this.m.children(".highlight").first(),c=a==i.b?b.prev():b.next();c.length&&(c.hasClass("divider")&&(c=a==i.b?c.prev():c.next()),this._x(c),this._ad(c))},_r:function(){var a=this.m.children(".highlight").first();a.length&&this._ab(a)},_s:function(a){for(var b=0;b<this.p.length;b++)if(this._t(this.p[b].name,a)){var c=this.m.children("[data-country-code="+this.p[b].iso2+"]").not(".preferred");this._x(c),this._ad(c,!0);break}},_t:function(a,b){return a.substr(0,b.length).toUpperCase()==b},_u:function(a){if(this.b.formatOnDisplay&&b.intlTelInputUtils&&this.s){var c=this.b.separateDialCode||!this.b.nationalMode&&"+"==a.charAt(0)?intlTelInputUtils.numberFormat.INTERNATIONAL:intlTelInputUtils.numberFormat.NATIONAL;a=intlTelInputUtils.formatNumber(a,this.s.iso2,c)}a=this._ah(a),this.a.val(a)},_v:function(b){b&&this.b.nationalMode&&"1"==this.s.dialCode&&"+"!=b.charAt(0)&&("1"!=b.charAt(0)&&(b="1"+b),b="+"+b);var c=this._af(b),d=null,e=this._m(b);if(c){var f=this.q[this._m(c)],g=a.inArray(this.s.iso2,f)>-1,h="+1"==c&&e.length>=4;if((!("1"==this.s.dialCode)||!this._isRegionlessNanp(e))&&(!g||h))for(var i=0;i<f.length;i++)if(f[i]){d=f[i];break}}else"+"==b.charAt(0)&&e.length?d="":b&&"+"!=b||(d=this.j);return null!==d&&this._z(d)},_isRegionlessNanp:function(b){var c=this._m(b);if("1"==c.charAt(0)){var d=c.substr(1,3);return a.inArray(d,j)>-1}return!1},_x:function(a){this.o.removeClass("highlight"),a.addClass("highlight")},_y:function(a,b,c){for(var d=b?k:this.p,e=0;e<d.length;e++)if(d[e].iso2==a)return d[e];if(c)return null;throw new Error("No country data for '"+a+"'")},_z:function(a){var b=this.s.iso2?this.s:{};this.s=a?this._y(a,!1,!1):{},this.s.iso2&&(this.j=this.s.iso2),this.l.attr("class","iti-flag "+a);var c=a?this.s.name+": +"+this.s.dialCode:"Unknown";if(this.l.parent().attr("title",c),this.b.separateDialCode){var d=this.s.dialCode?"+"+this.s.dialCode:"",e=this.a.parent();b.dialCode&&e.removeClass("iti-sdc-"+(b.dialCode.length+1)),d&&e.addClass("iti-sdc-"+d.length),this.t.text(d)}return this._aa(),this.o.removeClass("active"),a&&this.o.find(".iti-flag."+a).first().closest(".country").addClass("active"),b.iso2!==a},_aa:function(){var a="aggressive"===this.b.autoPlaceholder||!this.e&&(!0===this.b.autoPlaceholder||"polite"===this.b.autoPlaceholder);if(b.intlTelInputUtils&&a){var c=intlTelInputUtils.numberType[this.b.placeholderNumberType],d=this.s.iso2?intlTelInputUtils.getExampleNumber(this.s.iso2,this.b.nationalMode,c):"";d=this._ah(d),"function"==typeof this.b.customPlaceholder&&(d=this.b.customPlaceholder(d,this.s)),this.a.attr("placeholder",d)}},_ab:function(a){var b=this._z(a.attr("data-country-code"));if(this._ac(),this._ae(a.attr("data-dial-code"),!0),this.a.focus(),this.d){var c=this.a.val().length;this.a[0].setSelectionRange(c,c)}b&&this._triggerCountryChange()},_ac:function(){this.m.addClass("hide"),this.l.children(".iti-arrow").removeClass("up"),a(c).off(this.ns),a("html").off(this.ns),this.m.off(this.ns),this.b.dropdownContainer&&(this.g||a(b).off("scroll"+this.ns),this.dropdown.detach()),this.a.trigger("close:countrydropdown")},_ad:function(a,b){var c=this.m,d=c.height(),e=c.offset().top,f=e+d,g=a.outerHeight(),h=a.offset().top,i=h+g,j=h-e+c.scrollTop(),k=d/2-g/2;if(h<e)b&&(j-=k),c.scrollTop(j);else if(i>f){b&&(j+=k);var l=d-g;c.scrollTop(j-l)}},_ae:function(a,b){var c,d=this.a.val();if(a="+"+a,"+"==d.charAt(0)){var e=this._af(d);c=e?d.replace(e,a):a}else{if(this.b.nationalMode||this.b.separateDialCode)return;if(d)c=a+d;else{if(!b&&this.b.autoHideDialCode)return;c=a}}this.a.val(c)},_af:function(b){var c="";if("+"==b.charAt(0))for(var d="",e=0;e<b.length;e++){var f=b.charAt(e);if(a.isNumeric(f)&&(d+=f,this.q[d]&&(c=b.substr(0,e+1)),4==d.length))break}return c},_ag:function(){var b=a.trim(this.a.val()),c=this.s.dialCode,d=this._m(b),e="1"==d.charAt(0)?d:"1"+d;return(this.b.separateDialCode?"+"+c:"+"!=b.charAt(0)&&"1"!=b.charAt(0)&&c&&"1"==c.charAt(0)&&4==c.length&&c!=e.substr(0,4)?c.substr(1):"")+b},_ah:function(a){if(this.b.separateDialCode){var b=this._af(a);if(b){null!==this.s.areaCodes&&(b="+"+this.s.dialCode);var c=" "===a[b.length]||"-"===a[b.length]?b.length+1:b.length;a=a.substr(c)}}return this._j2(a)},_triggerCountryChange:function(){this.a.trigger("countrychange",this.s)},handleAutoCountry:function(){"auto"===this.b.initialCountry&&(this.j=a.fn[f].autoCountry,this.a.val()||this.setCountry(this.j),this.h.resolve())},handleUtils:function(){b.intlTelInputUtils&&(this.a.val()&&this._u(this.a.val()),this._aa()),this.i.resolve()},destroy:function(){if(this.allowDropdown&&(this._ac(),this.l.parent().off(this.ns),this.a.closest("label").off(this.ns)),this.b.autoHideDialCode){var b=this.a.prop("form");b&&a(b).off(this.ns)}this.a.off(this.ns),this.a.parent().before(this.a).remove()},getExtension:function(){return b.intlTelInputUtils?intlTelInputUtils.getExtension(this._ag(),this.s.iso2):""},getNumber:function(a){return b.intlTelInputUtils?intlTelInputUtils.formatNumber(this._ag(),this.s.iso2,a):""},getNumberType:function(){return b.intlTelInputUtils?intlTelInputUtils.getNumberType(this._ag(),this.s.iso2):-99},getSelectedCountryData:function(){return this.s},getValidationError:function(){return b.intlTelInputUtils?intlTelInputUtils.getValidationError(this._ag(),this.s.iso2):-99},isValidNumber:function(){var c=a.trim(this._ag()),d=this.b.nationalMode?this.s.iso2:"";return b.intlTelInputUtils?intlTelInputUtils.isValidNumber(c,d):null},setCountry:function(a){a=a.toLowerCase(),this.l.hasClass(a)||(this._z(a),this._ae(this.s.dialCode,!1),this._triggerCountryChange())},setNumber:function(a){var b=this._v(a);this._u(a),b&&this._triggerCountryChange()},setPlaceholderNumberType:function(a){this.b.placeholderNumberType=a,this._aa()}},a.fn[f]=function(b){var c=arguments;if(b===d||"object"==typeof b){var g=[];return this.each(function(){if(!a.data(this,"plugin_"+f)){var c=new e(this,b),d=c._a();g.push(d[0]),g.push(d[1]),a.data(this,"plugin_"+f,c)}}),a.when.apply(null,g)}if("string"==typeof b&&"_"!==b[0]){var h;return this.each(function(){var d=a.data(this,"plugin_"+f);d instanceof e&&"function"==typeof d[b]&&(h=d[b].apply(d,Array.prototype.slice.call(c,1))),"destroy"===b&&a.data(this,"plugin_"+f,null)}),h!==d?h:this}},a.fn[f].getCountryData=function(){return k},a.fn[f].loadUtils=function(b,c){a.fn[f].loadedUtilsScript?c&&c.resolve():(a.fn[f].loadedUtilsScript=!0,a.ajax({type:"GET",url:b,complete:function(){a(".intl-tel-input input").intlTelInput("handleUtils")},dataType:"script",cache:!0}))},a.fn[f].defaults=h,a.fn[f].version="12.1.0";for(var k=[["Afghanistan (‫افغانستان‬‎)","af","93"],["Albania (Shqipëri)","al","355"],["Algeria (‫الجزائر‬‎)","dz","213"],["American Samoa","as","1684"],["Andorra","ad","376"],["Angola","ao","244"],["Anguilla","ai","1264"],["Antigua and Barbuda","ag","1268"],["Argentina","ar","54"],["Armenia (Հայաստան)","am","374"],["Aruba","aw","297"],["Australia","au","61",0],["Austria (Österreich)","at","43"],["Azerbaijan (Azərbaycan)","az","994"],["Bahamas","bs","1242"],["Bahrain (‫البحرين‬‎)","bh","973"],["Bangladesh (বাংলাদেশ)","bd","880"],["Barbados","bb","1246"],["Belarus (Беларусь)","by","375"],["Belgium (België)","be","32"],["Belize","bz","501"],["Benin (Bénin)","bj","229"],["Bermuda","bm","1441"],["Bhutan (འབྲུག)","bt","975"],["Bolivia","bo","591"],["Bosnia and Herzegovina (Босна и Херцеговина)","ba","387"],["Botswana","bw","267"],["Brazil (Brasil)","br","55"],["British Indian Ocean Territory","io","246"],["British Virgin Islands","vg","1284"],["Brunei","bn","673"],["Bulgaria (България)","bg","359"],["Burkina Faso","bf","226"],["Burundi (Uburundi)","bi","257"],["Cambodia (កម្ពុជា)","kh","855"],["Cameroon (Cameroun)","cm","237"],["Canada","ca","1",1,["204","226","236","249","250","289","306","343","365","387","403","416","418","431","437","438","450","506","514","519","548","579","581","587","604","613","639","647","672","705","709","742","778","780","782","807","819","825","867","873","902","905"]],["Cape Verde (Kabu Verdi)","cv","238"],["Caribbean Netherlands","bq","599",1],["Cayman Islands","ky","1345"],["Central African Republic (République centrafricaine)","cf","236"],["Chad (Tchad)","td","235"],["Chile","cl","56"],["China (中国)","cn","86"],["Christmas Island","cx","61",2],["Cocos (Keeling) Islands","cc","61",1],["Colombia","co","57"],["Comoros (‫جزر القمر‬‎)","km","269"],["Congo (DRC) (Jamhuri ya Kidemokrasia ya Kongo)","cd","243"],["Congo (Republic) (Congo-Brazzaville)","cg","242"],["Cook Islands","ck","682"],["Costa Rica","cr","506"],["Côte d’Ivoire","ci","225"],["Croatia (Hrvatska)","hr","385"],["Cuba","cu","53"],["Curaçao","cw","599",0],["Cyprus (Κύπρος)","cy","357"],["Czech Republic (Česká republika)","cz","420"],["Denmark (Danmark)","dk","45"],["Djibouti","dj","253"],["Dominica","dm","1767"],["Dominican Republic (República Dominicana)","do","1",2,["809","829","849"]],["Ecuador","ec","593"],["Egypt (‫مصر‬‎)","eg","20"],["El Salvador","sv","503"],["Equatorial Guinea (Guinea Ecuatorial)","gq","240"],["Eritrea","er","291"],["Estonia (Eesti)","ee","372"],["Ethiopia","et","251"],["Falkland Islands (Islas Malvinas)","fk","500"],["Faroe Islands (Føroyar)","fo","298"],["Fiji","fj","679"],["Finland (Suomi)","fi","358",0],["France","fr","33"],["French Guiana (Guyane française)","gf","594"],["French Polynesia (Polynésie française)","pf","689"],["Gabon","ga","241"],["Gambia","gm","220"],["Georgia (საქართველო)","ge","995"],["Germany (Deutschland)","de","49"],["Ghana (Gaana)","gh","233"],["Gibraltar","gi","350"],["Greece (Ελλάδα)","gr","30"],["Greenland (Kalaallit Nunaat)","gl","299"],["Grenada","gd","1473"],["Guadeloupe","gp","590",0],["Guam","gu","1671"],["Guatemala","gt","502"],["Guernsey","gg","44",1],["Guinea (Guinée)","gn","224"],["Guinea-Bissau (Guiné Bissau)","gw","245"],["Guyana","gy","592"],["Haiti","ht","509"],["Honduras","hn","504"],["Hong Kong (香港)","hk","852"],["Hungary (Magyarország)","hu","36"],["Iceland (Ísland)","is","354"],["India (भारत)","in","91"],["Indonesia","id","62"],["Iran (‫ایران‬‎)","ir","98"],["Iraq (‫العراق‬‎)","iq","964"],["Ireland","ie","353"],["Isle of Man","im","44",2],["Israel (‫ישראל‬‎)","il","972"],["Italy (Italia)","it","39",0],["Jamaica","jm","1876"],["Japan (日本)","jp","81"],["Jersey","je","44",3],["Jordan (‫الأردن‬‎)","jo","962"],["Kazakhstan (Казахстан)","kz","7",1],["Kenya","ke","254"],["Kiribati","ki","686"],["Kosovo","xk","383"],["Kuwait (‫الكويت‬‎)","kw","965"],["Kyrgyzstan (Кыргызстан)","kg","996"],["Laos (ລາວ)","la","856"],["Latvia (Latvija)","lv","371"],["Lebanon (‫لبنان‬‎)","lb","961"],["Lesotho","ls","266"],["Liberia","lr","231"],["Libya (‫ليبيا‬‎)","ly","218"],["Liechtenstein","li","423"],["Lithuania (Lietuva)","lt","370"],["Luxembourg","lu","352"],["Macau (澳門)","mo","853"],["Macedonia (FYROM) (Македонија)","mk","389"],["Madagascar (Madagasikara)","mg","261"],["Malawi","mw","265"],["Malaysia","my","60"],["Maldives","mv","960"],["Mali","ml","223"],["Malta","mt","356"],["Marshall Islands","mh","692"],["Martinique","mq","596"],["Mauritania (‫موريتانيا‬‎)","mr","222"],["Mauritius (Moris)","mu","230"],["Mayotte","yt","262",1],["Mexico (México)","mx","52"],["Micronesia","fm","691"],["Moldova (Republica Moldova)","md","373"],["Monaco","mc","377"],["Mongolia (Монгол)","mn","976"],["Montenegro (Crna Gora)","me","382"],["Montserrat","ms","1664"],["Morocco (‫المغرب‬‎)","ma","212",0],["Mozambique (Moçambique)","mz","258"],["Myanmar (Burma) (မြန်မာ)","mm","95"],["Namibia (Namibië)","na","264"],["Nauru","nr","674"],["Nepal (नेपाल)","np","977"],["Netherlands (Nederland)","nl","31"],["New Caledonia (Nouvelle-Calédonie)","nc","687"],["New Zealand","nz","64"],["Nicaragua","ni","505"],["Niger (Nijar)","ne","227"],["Nigeria","ng","234"],["Niue","nu","683"],["Norfolk Island","nf","672"],["North Korea (조선 민주주의 인민 공화국)","kp","850"],["Northern Mariana Islands","mp","1670"],["Norway (Norge)","no","47",0],["Oman (‫عُمان‬‎)","om","968"],["Pakistan (‫پاکستان‬‎)","pk","92"],["Palau","pw","680"],["Palestine (‫فلسطين‬‎)","ps","970"],["Panama (Panamá)","pa","507"],["Papua New Guinea","pg","675"],["Paraguay","py","595"],["Peru (Perú)","pe","51"],["Philippines","ph","63"],["Poland (Polska)","pl","48"],["Portugal","pt","351"],["Puerto Rico","pr","1",3,["787","939"]],["Qatar (‫قطر‬‎)","qa","974"],["Réunion (La Réunion)","re","262",0],["Romania (România)","ro","40"],["Russia (Россия)","ru","7",0],["Rwanda","rw","250"],["Saint Barthélemy","bl","590",1],["Saint Helena","sh","290"],["Saint Kitts and Nevis","kn","1869"],["Saint Lucia","lc","1758"],["Saint Martin (Saint-Martin (partie française))","mf","590",2],["Saint Pierre and Miquelon (Saint-Pierre-et-Miquelon)","pm","508"],["Saint Vincent and the Grenadines","vc","1784"],["Samoa","ws","685"],["San Marino","sm","378"],["São Tomé and Príncipe (São Tomé e Príncipe)","st","239"],["Saudi Arabia (‫المملكة العربية السعودية‬‎)","sa","966"],["Senegal (Sénégal)","sn","221"],["Serbia (Србија)","rs","381"],["Seychelles","sc","248"],["Sierra Leone","sl","232"],["Singapore","sg","65"],["Sint Maarten","sx","1721"],["Slovakia (Slovensko)","sk","421"],["Slovenia (Slovenija)","si","386"],["Solomon Islands","sb","677"],["Somalia (Soomaaliya)","so","252"],["South Africa","za","27"],["South Korea (대한민국)","kr","82"],["South Sudan (‫جنوب السودان‬‎)","ss","211"],["Spain (España)","es","34"],["Sri Lanka (ශ්‍රී ලංකාව)","lk","94"],["Sudan (‫السودان‬‎)","sd","249"],["Suriname","sr","597"],["Svalbard and Jan Mayen","sj","47",1],["Swaziland","sz","268"],["Sweden (Sverige)","se","46"],["Switzerland (Schweiz)","ch","41"],["Syria (‫سوريا‬‎)","sy","963"],["Taiwan (台灣)","tw","886"],["Tajikistan","tj","992"],["Tanzania","tz","255"],["Thailand (ไทย)","th","66"],["Timor-Leste","tl","670"],["Togo","tg","228"],["Tokelau","tk","690"],["Tonga","to","676"],["Trinidad and Tobago","tt","1868"],["Tunisia (‫تونس‬‎)","tn","216"],["Turkey (Türkiye)","tr","90"],["Turkmenistan","tm","993"],["Turks and Caicos Islands","tc","1649"],["Tuvalu","tv","688"],["U.S. Virgin Islands","vi","1340"],["Uganda","ug","256"],["Ukraine (Україна)","ua","380"],["United Arab Emirates (‫الإمارات العربية المتحدة‬‎)","ae","971"],["United Kingdom","gb","44",0],["United States","us","1",0],["Uruguay","uy","598"],["Uzbekistan (Oʻzbekiston)","uz","998"],["Vanuatu","vu","678"],["Vatican City (Città del Vaticano)","va","39",1],["Venezuela","ve","58"],["Vietnam (Việt Nam)","vn","84"],["Wallis and Futuna (Wallis-et-Futuna)","wf","681"],["Western Sahara (‫الصحراء الغربية‬‎)","eh","212",1],["Yemen (‫اليمن‬‎)","ye","967"],["Zambia","zm","260"],["Zimbabwe","zw","263"],["Åland Islands","ax","358",1]],l=0;l<k.length;l++){var m=k[l];k[l]={name:m[0],iso2:m[1],dialCode:m[2],priority:m[3]||0,areaCodes:m[4]||null}}});
+</script>
+
 </body>
 </html>
