@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Movimientos</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<!-- touchSwipe library -->
+	<script src="../js/jquery.touchSwipe.min.js"></script>
+	<!-- Sliding swipe menu javascript file -->
+	<script src="../js/menuDesplegable/jquery.slideandswipe.js"></script>
+	<link rel="stylesheet" href="../css/styleMenu.css" type="text/css" media="all">
+	<link rel="stylesheet" type="text/css" href="../css/styleMovimientos.css">
+
+    <link rel="stylesheet" href="../librerias/pika/css/pikaday.css">
+
+</head>
+<body>
+<div class="caja">
+	<div id="div" style="background: linear-gradient( 90deg, #77C32A, #1F73B4,  #54358B); "></div>
+</div> 
+ 
+<div class="container-fluid">
+	<div class="row">
+		<div class="topnav">
+		<!-- Centered link -->
+		<div class="topnav-centered">
+			<a href="#home" class="active">Movimientos</a>
+		</div> 
+		<!-- Left-aligned links (default) -->
+			<a id="botonMenu" href="#home" class="active"><i class="fas fa-chevron-circle-left"></i></a>
+		<!-- Right-aligned links -->
+		<div class="topnav-right">
+			<main>
+				<a href="#" id="menu" class="ssm-toggle-nav" title="open nav"><i class="fas fa-bars"></i></a>
+			</main>
+		</div>
+		</div>
+	</div>
+	<nav class="nav">
+	<div id="mySidenav" class="contenedor-menu" data-status="disabled">
+		<div class="row menu-lateral">
+			<div class="col-xs-6">
+				<a id="btnEjemplo"></a>
+			</div>
+			<div class="col-xs-6">
+				<img id="img_usuario" src="">
+			</div>
+		</div>
+		<div class="row">
+			<ul class="nav menu" role="tablist">
+				<li><a href="movimientos.html"><i class="icono izquierda fas fa-book"></i>Historial<i class="icono derecha fas fa-angle-right"></i></a></li>
+				<li><a href="#"><i class="icono izquierda fas fa-credit-card"></i>Cartera<i class="icono derecha fa fa-chevron-down"></i></a>
+					<ul  id="datosEjemplo" class="nav menu" role="tablist">
+					</ul>
+				</li>
+				<li><a href="#"><i class="icono izquierda fas fa-dollar-sign"></i>Recargas<i class="icono derecha fa fa-chevron-down"></i></a>
+					<ul class="nav menu" role="tablist">
+						<li><a href="rcgtarjeta.html">Tarjeta<i class="icono derecha fas fa-angle-right"></i></a></li>
+						<li><a href="rcgbanco.html">Cuenta banco<i class="icono derecha fas fa-angle-right"></i></a></li>
+					</ul>
+				</li>
+				<li><a href="transferencia.html"><i class="icono izquierda fas fa-exchange-alt"></i>Pagar<i class="icono derecha fas fa-angle-right"></i></a>
+					<ul  id="datosEjemplo" class="nav menu" role="tablist">
+						<li><a href="#" id="b_modal_qr2">Mi Codigo QR</a></li>
+					</ul>
+
+				</li>
+				<li><a href="ajustes.html">Perfil<i class="icono derecha fas fa-angle-right"></i></a></li>
+				<li><a href="#" id="botonMapa">Mapa ejemplo<i class="icono derecha fas fa-angle-right"></i></a></li>
+				<li><a href="#" id="cerrar_se">Cerrar Sesion<i class="icono derecha fas fa-angle-right"></i></a></li>
+			</ul>
+		</div>
+	</div>
+	</nav>
+	<div class="row-content">
+		<div class="ssm-overlay ssm-toggle-nav"></div>
+	</div>
+	<div class="row">
+	<!--                                                        -->	
+		<h4>Ultimas <span id="total_filas"> </span> transacciones</h4>
+		<div class="form-group">
+		
+
+<br>
+
+		<div class="Tabla">
+
+            
+          <table  id="mitabla" class="table table-bordered table-striped">
+            <thead>
+              <tr >
+                <th>Fecha</th>
+                <th>Concepto</th>
+                <th>Movimiento</th>
+                <th>Usuario</th>
+                <th>Monto</th>
+                <th>Saldo</th>
+              </tr>
+            </thead>
+            <tbody id="tabla_general_movimientos">
+
+            <!--  <tr>
+                <td>10/09/2018</td>
+                <td style="font-weight: 600">Pago</td>
+                <td id="pagos">$100</td>
+              </tr>
+              <tr>
+                <td>10/09/2018</td>
+                <td style="font-weight: 600">Recarga</td>
+                <td id="recargas">$200</td>
+              </tr>
+              <tr>
+                <td>10/09/2018</td>
+                <td style="font-weight: 600">Transaccion</td>
+                <td id="transacciones">$100</td>
+              </tr>-->
+            </tbody>
+           </table>
+
+
+
+
+
+</div>
+
+		<div class="pagination-container" align="center">
+			<!-- <nav> -->
+				<ul class="pagination"></ul>
+			<!-- </nav> -->
+		</div>
+
+<hr>
+
+</div> <!-- este div va despues de  selecciona el rango -->
+<!--                                                          --->
+
+
+<hr>
+<!--  boton generear reporte en excel      -->
+			<button onclick="exportTableToExcel('mitabla');" class="btn btn-primary" align="center">Exportar a Excel</button>
+<br>
+<hr>
+
+<!--  boton generear reporte en excel      -->
+
+
+<!--
+		<div class="row">
+			<div class="col-md-6">
+			<select name="state" id="maxRows" class="form-control " style="width:150px;">
+				<option value="10">10</option>
+				<option value="25">25</option>
+				<option value="50">50</option>
+				
+			</select>
+			</div>
+			<div class="col-md-6">
+
+			</div>
+		</div> -->
+
+<br>
+
+
+<script src="../librerias/pika/pikaday.js"></script>
+	
+<div  id="capa_calendario" class="container"> <!-- este div es antepenultimo -->
+
+<div class="form-group">
+<input type="radio" name="act_calen" id="radio_fecha" value="0"> Por Fecha: <br>
+</div>
+
+<div class="container">
+
+	<div class="form-group">
+	        <label>Fecha Inicial</label>
+
+	<!-- para que el datepiker funcione debes poner el script abajo del input--->
+
+	<input type="text" id="datepicker1">
+
+
+	<script>
+    var picker = new Pikaday({ field: document.getElementById('datepicker1'),
+        format:'DD-MM-YYYY',
+        toString(date, format) {
+            var day = date.getDate();
+            var month = date.getMonth() + 1;
+            const year = date.getFullYear();
+            if(day<10)
+            {
+                day="0"+day;
+            }
+            if(month<10)
+            {
+                month="0"+month;
+            }
+            return `${day}-${month}-${year}`;
+            }	                 
+         });
+	</script>
+	</div>
+
+	<div class="form-group">
+	<br>
+	    <label>Fecha Final </label>
+	    <input type="text" id="datepicker2">
+	    <script>
+	    var picker = new Pikaday({ field: document.getElementById('datepicker2'),
+	                format:'DD-MM-YYYY',
+	                toString(date, format) {
+	                    var day = date.getDate();
+	                    var month = date.getMonth() + 1;
+	                    const year = date.getFullYear();
+	                    if(day<10)
+	                    {
+	                        day="0"+day;
+	                    }
+                        if(month<10)
+                        {
+                            month="0"+month;
+                        }
+                        return `${day}-${month}-${year}`;
+                    }       
+            });
+        </script>
+	</div>
+</div>
+
+       
+
+        <!-- campo de los ultimos _ movimientos   -->
+		 <div class="form-group">
+			<hr>
+		 	<input type="radio" name="act_calen" id="radio_ran" value="0" checked> Los ultimos 
+		 	<input type="text" name="cant_filas" id="cant_filas" value="10" size="5"> movimientos
+			<hr>
+		</div>            
+
+		<div id="botones_calendario">
+			<hr>	
+		    <button id="buscar_tra" class="btn btn-primary btn-agre" ><span class="glyphicon glyphicon-search"></span>Consultar</button> 
+			<hr>
+		</div>
+
+	 </div> 	
+		<br><br><br>
+	</div>
+</div>
+
+
+  <!-- Ventana Modal -->
+  <div class="modal fade" id="modal_mi_qr" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- contenido de la ventana modal-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 align="center" class="modal-title">Mi codigo QR:</h4>
+        </div>
+        <div class="modal-body">
+<!-- aqui es donde se generara el QR-->        	
+
+        	<div id="qr" align="center"></div>
+<!-- aqui va el numero dew telefono debajo del codigo QR-->          
+          <br>
+          <h3 align="center">Usuario:</h3>
+          <br>
+          <h3 id="num_tel" align="center"></h3>
+
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+
+
+
+
+
+<script type="text/javascript" src="../cordova.js"></script>
+<script src="../js/menuLateral.js"></script>
+<script type="text/javascript" src="../js/jquery-qrcode-0.14.0.js"></script>
+
+
+<script type="text/javascript" src="../js/funciones.js"></script>
+
+<script type="text/javascript" src="../js/jquery-qrcode-0.14.0.js"></script>
+<script src="../js/sweetalert.min.js"></script>
+
+<script type="text/javascript">
+	
+
+//ESTA ES LA FUNCION PARA  EXPORTAR EN EXCEL LA TABLA
+function exportTableToExcel(tableID, filename = ''){
+    var downloadLink;
+    var dataType = 'application/vnd.ms-excel';
+    var tableSelect = document.getElementById(tableID);
+    var tableHTML = tableSelect.outerHTML.replace(/ /g, '%20');
+    
+    // Specify file name
+    filename = filename?filename+'.xls':'Consulta de Movimientos.xls';
+    
+    // Create download link element
+    downloadLink = document.createElement("a");
+    
+    document.body.appendChild(downloadLink);
+    
+    if(navigator.msSaveOrOpenBlob){
+        var blob = new Blob(['ufeff', tableHTML], {
+            type: dataType
+        });
+        navigator.msSaveOrOpenBlob( blob, filename);
+    }else{
+        // Create a link to the file
+        downloadLink.href = 'data:' + dataType + ', ' + tableHTML;
+    
+        // Setting the file name
+        downloadLink.download = filename;
+        
+        //triggering the function
+        downloadLink.click();
+    }
+}
+
+</script>
+</body>
+</html>

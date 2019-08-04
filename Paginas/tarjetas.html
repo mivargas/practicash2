@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Registrar tarjeta</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+	<link href="http://allfont.es/allfont.css?fonts=roboto-regular" rel="stylesheet" type="text/css" />
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css"/>
+	<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/jquery-validation@1.17.0/dist/jquery.validate.js"></script>
+	<!-- touchSwipe library -->
+	<script src="../js/jquery.touchSwipe.min.js"></script>
+	<!-- Sliding swipe menu javascript file -->
+	<script src="../js/menuDesplegable/jquery.slideandswipe.js"></script>
+	<link rel="stylesheet" href="../css/styleMenu.css" type="text/css" media="all">
+	<link rel="stylesheet" type="text/css" href="../css/styleTarjetas.css" media="all">
+</head>
+<body>
+
+<div class="caja">
+	<div id="div" style="background: linear-gradient( 90deg, #77C32A, #1F73B4,  #54358B); "></div>
+</div>  
+
+<!--  Tarjetas -->    
+<div class="container-fluid" >
+	<div class="row">
+		<div class="topnav">
+		<!-- Centered link -->
+		<div class="topnav-centered">
+			<a href="#home" class="active">Registrar tarjeta</a>
+		</div> 
+		
+		<!-- Left-aligned links (default) -->
+			<a id="botonMenu" href="#home" class="active"><i class="fas fa-chevron-circle-left"></i></a>
+		
+		<!-- Right-aligned links -->
+		<div class="topnav-right">
+			<main>
+				<a href="#" id="menu" class="ssm-toggle-nav" title="open nav"><i class="fas fa-bars"></i></a>
+			</main>
+		</div>
+		</div>
+	</div>
+	
+	<nav class="nav">
+	<div id="mySidenav" class="contenedor-menu" data-status="disabled">
+		<div class="row menu-lateral">
+			<div class="col-xs-6">
+				<a id="btnEjemplo"></a>
+			</div>
+			<div class="col-xs-6">
+				<img id="img_usuario" src="">
+			</div>
+		</div>
+		<div class="row">
+			<ul class="nav menu" role="tablist">
+				<li><a href="movimientos.html"><i class="icono izquierda fas fa-book"></i>Historial<i class="icono derecha fas fa-angle-right"></i></a></li>
+				<li><a href="#"><i class="icono izquierda fas fa-credit-card"></i>Cartera<i class="icono derecha fa fa-chevron-down"></i></a>
+					<ul  id="datosEjemplo" class="nav menu" role="tablist">
+					</ul>
+				</li>
+				<li><a href="#"><i class="icono izquierda fas fa-dollar-sign"></i>Recargas<i class="icono derecha fa fa-chevron-down"></i></a>
+					<ul class="nav menu" role="tablist">
+						<li><a href="rcgtarjeta.html">Tarjeta<i class="icono derecha fas fa-angle-right"></i></a></li>
+						<li><a href="rcgbanco.html">Cuenta banco<i class="icono derecha fas fa-angle-right"></i></a></li>
+					</ul>
+				</li>
+				<li><a href="transferencia.html"><i class="icono izquierda fas fa-exchange-alt"></i>Pagar<i class="icono derecha fas fa-angle-right"></i></a>
+					<ul  id="datosEjemplo" class="nav menu" role="tablist">
+						<li><a href="transferencia.html">Transferencia</a></li>
+						<li><a href="#" id="b_modal_qr2">Mi Codigo QR</a></li>
+					</ul>
+
+				</li>
+				<li><a href="ajustes.html">Perfil<i class="icono derecha fas fa-angle-right"></i></a></li>
+				<li><a href="#" id="botonMapa">Mapa ejemplo<i class="icono derecha fas fa-angle-right"></i></a></li>
+				<li><a href="#">Cerrar Sesion<i class="icono derecha fas fa-angle-right"></i></a></li>
+			</ul>
+		</div>
+	</div>
+	</nav>
+
+	<div class="row-content">
+		<div class="ssm-overlay ssm-toggle-nav"></div>
+	</div>
+	
+	<div class="row">	
+		<div class="col-md-3" >
+		</div>	
+		<div class="col-md-6">
+			<h2>Tipo Tarjeta</h2><br>
+			<div class="row">
+				<form>
+					<div class="form-group">
+						<div class="col-xs-1">
+						</div>
+						<div class="col-xs-2">
+						<label>
+						<img id="img" src="../img/creditcard-a.png" alt="..." class="img-check">
+						<input type="checkbox" name="check" id="imgCheck" value="American Express" class="hidden" autocomplete="off">
+						</label>
+						</div> 
+						<div class="col-xs-2">
+						<label>
+						<img id="img" src="../img/creditcard-b.png" alt="..." class="img-check">
+						<input type="checkbox" name="check" id="imgCheck" value="Discover" class="hidden" autocomplete="off">
+						</label>
+						</div>
+						<div class="col-xs-2">
+						<label>
+						<img id="img" src="../img/creditcard-c.png" alt="..." class="img-check">
+						<input type="checkbox" name="check" id="imgCheck" value="Mastercard" class="hidden" autocomplete="off">
+						</label>
+						</div>
+						<div class="col-xs-2">
+						<label>
+						<img id="img" src="../img/creditcard-d.png"  alt="..." class="img-check">
+						<input type="checkbox" name="check" id="imgCheck" value="Mastercard" class="hidden" autocomplete="off">
+						</label>
+						</div>
+						<div class="col-xs-2">
+						<label>
+						<img id="img" src="../img/creditcard-e.png"  alt="..." class="img-check">
+						<input type="checkbox" name="check" id="imgCheck" value="Visa" class="hidden" autocomplete="off">
+						</label>
+						</div>
+						<div class="col-xs-1">
+						</div>
+					</div>
+				</form>
+			</div>
+		<br>
+		<div class=" container-fluid" >
+			<div class="row">
+				<div class="col-md-3"></div>
+				<div class="col-md-6">
+					<select  id="bncs" class="form-control">	
+						<option value="BncPichincha" > Banco del Pichincha</option>
+						<option value="BncProdubanco" > Banco Produbanco</option>
+						<option value="BncGuayaquil" > Banco de Guayaquil</option>
+						<option value="BncPacifico" > Banco del Pacifico</option>	
+					</select>
+					<br>
+					<form id="formulario" >
+						<input class="form-control" type="text" id="numero" name="numero" placeholder="# Tarjeta">
+						<br>
+						<form>
+						<div class="form-group">   
+						<div class="inner-addon right-addon input-append date ">
+						<i class=" calendario fas fa-calendar-alt"></i>
+						<input size="16" type="text" id="date" name="date" class="form-control" placeholder="Fecha Caducidad" />
+						<span class="add-on"><i class="icon-th"></i></span>
+						</div>
+						<br>
+						<input class="form-control" type="text"  id="cv" name="cv" placeholder="CV">
+						<br>
+						<button type="submit" class="form-control" id="btnRegistrar">Registrar</button> 
+						</br>
+						</form>
+					</form>			
+				<div class="col-md-3"></div>
+				</div>
+				<div class="col-md-3">
+				</div>
+			</div>	
+		</div>
+		</div>
+		<div class="col-md-3">
+		</div>	
+	</div> 
+</div>
+
+
+
+  <!-- Ventana Modal -->
+  <div class="modal fade" id="modal_mi_qr" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- contenido de la ventana modal-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 align="center" class="modal-title">Mi codigo QR:</h4>
+        </div>
+        <div class="modal-body">
+<!-- aqui es donde se generara el QR-->        	
+
+        	<div id="qr" align="center"></div>
+<!-- aqui va el numero dew telefono debajo del codigo QR-->          
+          <br>
+          <h3 align="center">Usuario:</h3>
+          <br>
+          <h3 id="num_tel" align="center"></h3>
+
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+
+
+
+
+
+
+
+<script type="text/javascript" src="../cordova.js"></script>
+<script src="../js/menuLateral.js"></script>
+<script src="../js/calendarioTarjetas.js"></script>
+<script src="../js/tarjetas.js"></script>
+<script src="../js/datos.js"></script>
+
+
+<script type="text/javascript" src="../js/funciones.js"></script>
+<script type="text/javascript" src="../js/jquery-qrcode-0.14.0.js"></script>
+
+<script>
+	
+</script>
+</body>	
+</html>
