@@ -144,6 +144,10 @@
 <script src="intlTelInput.min.js"></script> 
 
 <script>
+	if(window.jQuery)
+{
+    alert("si");
+};
       $("#tel").intlTelInput({
       	allowDropdown: true,
       	autoPlaceholder: "on",
